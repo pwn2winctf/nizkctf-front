@@ -1,17 +1,34 @@
-import { GetStaticPaths, GetStaticProps, NextPage, NextPageContext } from 'next'
+import React, { useState } from 'react'
+import { GetStaticPaths, GetStaticProps, NextPage } from 'next'
 import Head from 'next/head'
+
 
 import ReactMarkdown from 'react-markdown'
 
 import { Challenge } from '../../interface'
 
 import { getChallengeInfo, getChallengesId } from '../../lib/challenges'
+import claimFlag from '../../lib/claimFlag'
 
 interface ChallengePageProps {
   challenge: Challenge
 }
 
+const teamName = 'lorhan'
+const challengeMeta = {
+  id: 'test',
+  name: 'Desafio teste',
+  pk: 'AwTtUaLtzpHyxVY0oQvEP398tPPK8iLKjsjgmvjn+y8=',
+  salt: 'KoVNy6Blq3vFpmdgAXO9MQ==',
+  opslimit: 2,
+  memlimit: 67108864
+}
+
 const ChallengePage: NextPage<ChallengePageProps> = ({ challenge }) => {
+
+  const [flag, setFlag] = useState<string>('CTF-BR{123}')
+  const handleSubmit = () => claimFlag({ teamName, flag, challenge: challengeMeta }).then(r => console.log(r))
+
   return (
     <>
       <Head>
@@ -23,6 +40,8 @@ const ChallengePage: NextPage<ChallengePageProps> = ({ challenge }) => {
           {challenge.description}
         </ReactMarkdown>
       </section>
+      <input type='text' onChange={event => setFlag(event.target.value)} value={flag} />
+      <button onClick={() => handleSubmit()}>Clique</button>
     </>
   )
 }
