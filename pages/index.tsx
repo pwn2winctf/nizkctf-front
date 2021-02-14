@@ -8,6 +8,7 @@ import { Message, Solve } from '../interface'
 import { getNews } from '../lib/news'
 import { formatDateByLanguage } from '../utils'
 import { getSimpleSolvesList } from '../lib/solves'
+import Navbar from '../components/Navbar'
 
 interface HomePageProps {
   news: Message[]
@@ -22,6 +23,7 @@ const HomePage: NextPage<HomePageProps> = ({ news, solves }) => {
       <Head>
         <title>Titulo</title>
       </Head>
+      <Navbar />
       <section>
         <h2>News</h2>
         <ul>

@@ -1,5 +1,14 @@
 import dayjs from 'dayjs'
 
+type languages = 'en-US' | 'pt-BR'
+
+export const resolveLanguage = (language: string): languages => {
+  const defaultLanguage = 'en-US'
+  const supportedLanguages = ['en-US', 'pt-BR']
+
+  return supportedLanguages.includes(language) ? language as languages : defaultLanguage
+}
+
 export const formatDateByLanguage = (timestamp: number, language: string) => {
   const defaultFormat = 'MM/DD/YYYY HH:mm:ss'
   const formats = {
