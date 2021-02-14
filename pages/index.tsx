@@ -1,14 +1,16 @@
 import { GetStaticProps, NextPage } from 'next'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import Link from 'next/link'
+import { Col, Container, Row } from 'react-bootstrap'
 
 import { Message, Solve } from '../interface'
 
 import { getNews } from '../lib/news'
-import { formatDateByLanguage } from '../utils'
 import { getSimpleSolvesList } from '../lib/solves'
+
 import Navbar from '../components/Navbar'
+import News from '../components/News'
+import Solves from '../components/Solves'
 
 interface HomePageProps {
   news: Message[]
@@ -21,32 +23,19 @@ const HomePage: NextPage<HomePageProps> = ({ news, solves }) => {
   return (
     <>
       <Head>
-        <title>Titulo</title>
+        <title>Home - NIZKCTF</title>
       </Head>
       <Navbar />
-      <section>
-        <h2>News</h2>
-        <ul>
-          {news.map(({ msg, datetime }) => (
-            <li>
-              <p>{formatDateByLanguage(datetime, router.locale || 'en')}</p>
-              <p>{msg}</p>
-            </li>
-          ))}
-        </ul>
-      </section>
-      <section>
-        <h2>Solves</h2>
-        <ul>
-          {solves.map(({ challenge, datetime, team }) => (
-            <li>
-              <p>{formatDateByLanguage(datetime, router.locale || 'en')}</p>
-              <p>{challenge}</p>
-              <p>{team}</p>
-            </li>
-          ))}
-        </ul>
-      </section>
+      <Container style={{ marginTop: 55 }} className='pt-4'>
+        <Row>
+          <Col sm={12} lg={6}>
+            <News list={news} />
+          </Col>
+          <Col sm={12} lg={6} className='mt-4 mt-lg-0'>
+            <Solves list={solves} />
+          </Col>
+        </Row>
+      </Container>
     </>
   )
 }
