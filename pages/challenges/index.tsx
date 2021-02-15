@@ -13,7 +13,6 @@ import { fetchSimpleSolvesList, countSolves, getSimpleSolvesList, SOLVES_URL } f
 
 import Navbar from '../../components/Navbar'
 import { computeScore, resolveLanguage, resolveListWithoutDuplicatedTags } from '../../utils'
-import translations from './translations'
 
 interface ChallengesPageProps {
   allPostsData: Array<Challenge>
@@ -99,10 +98,21 @@ const ChallengesPage: NextPage<ChallengesPageProps> = (props) => {
   )
 }
 
+const translations = {
+  'en-US': {
+    title: 'Challenges - NIZKCTF',
+    all: 'All',
+  },
+  'pt-BR': {
+    title: 'Desafios - NIZKCTF',
+    all: 'Todos',
+  },
+}
+
 export async function getStaticProps({ locale }) {
   const allPostsData = await getChallenges(locale)
   const standings = await getSimpleSolvesList()
-  
+
   allPostsData.sort((a, b) => a.metadata.id.localeCompare(b.metadata.id))
 
   return {
