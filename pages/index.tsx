@@ -1,12 +1,12 @@
 import { GetStaticProps, NextPage } from 'next'
 import Head from 'next/head'
-import { useRouter } from 'next/router'
+import useSWR from 'swr'
 import { Col, Container, Row } from 'react-bootstrap'
 
 import { Message, Solve } from '../interface'
 
-import { getNews } from '../lib/news'
-import { getSimpleSolvesList } from '../lib/solves'
+import { fetchNews, getNews, NEWS_URL } from '../lib/news'
+import { fetchSimpleSolvesList, getSimpleSolvesList, SOLVES_URL } from '../lib/solves'
 
 import Navbar from '../components/Navbar'
 import News from '../components/News'
@@ -17,8 +17,17 @@ interface HomePageProps {
   solves: Solve[]
 }
 
-const HomePage: NextPage<HomePageProps> = ({ news, solves }) => {
-  const router = useRouter()
+const HomePage: NextPage<HomePageProps> = (props) => {
+  const { data: news } = useSWR(NEWS_URL, fetchNews, {
+    initialData: props.news,
+
+    refreshInterval: 1000 * 60 * 1 //1min
+  })
+
+  const { data: solves } = useSWR(SOLVES_URL, fetchSimpleSolvesList, {
+    initialData: props.solves,
+    refreshInterval: 1000 * 60 * 1 //1min
+  })
 
   return (
     <>

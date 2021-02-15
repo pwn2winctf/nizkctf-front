@@ -1,14 +1,26 @@
-import { Score } from "../interface"
+import { Score, Solve } from "../interface"
 
-const SOLVES_BASE_URL = 'https://pwn2.win'
+export const SOLVES_URL = new URL('/2020submissions/accepted-submissions.json', 'https://pwn2.win').toString()
 
 export const getSimpleSolvesList = async () => {
-  const url = new URL('/2020submissions/accepted-submissions.json', SOLVES_BASE_URL).toString()
+  const sortedSolves: Array<{ team: string, challenge: string, datetime: number }> = await fetchSimpleSolvesList(SOLVES_URL)
+
+  return sortedSolves
+}
+
+export const getStandingsList = async () => {
+  const response: Score = await fetch(SOLVES_URL).then(response => response.json())
+  response.standings.sort((a, b) => a.pos - b.pos)
+
+  return response.standings
+}
+
+export const fetchSimpleSolvesList = async (url:string): Promise<Solve[]> => {
   const response: Score = await fetch(url).then(response => response.json())
 
   const { standings } = response
 
-  const sortedSolves: Array<{ team: string, challenge: string, datetime: string }> = standings.reduce((reducer, { taskStats, team }) => {
+  const sortedSolves: Array<{ team: string, challenge: string, datetime: number }> = standings.reduce((reducer, { taskStats, team }) => {
     Object.keys(taskStats).forEach(challenge => {
       reducer.push({
         team,
@@ -21,12 +33,4 @@ export const getSimpleSolvesList = async () => {
     .sort((a, b) => b.datetime - a.datetime);
 
   return sortedSolves
-}
-
-export const getStandingsList = async () => {
-  const url = new URL('/2020submissions/accepted-submissions.json', SOLVES_BASE_URL).toString()
-  const response : Score = await fetch(url).then(response => response.json())
-  response.standings.sort((a, b) => a.pos - b.pos)
-
-  return response.standings
 }
