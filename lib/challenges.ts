@@ -1,4 +1,4 @@
-import { Challenge, ChallengeDescription, ChallengeMetadata, SupportedLanguage } from "../interface"
+import { Challenge, ChallengeDescription, ChallengeMetadata } from "../interface"
 
 const CHALLENGES_BASE_URL = 'https://pwn2.win/2020/challenges/'
 
