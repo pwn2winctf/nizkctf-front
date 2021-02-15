@@ -35,7 +35,7 @@ const HomePage: NextPage<HomePageProps> = (props) => {
         <title>Home - NIZKCTF</title>
       </Head>
       <Navbar />
-      <Container style={{ marginTop: 55 }} className='pt-4'>
+      <Container style={{ marginTop: 55 }} className='pt-4' fluid>
         <Row>
           <Col sm={12} lg={6}>
             <News list={news} />
