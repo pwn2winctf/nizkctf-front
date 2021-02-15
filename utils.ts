@@ -1,4 +1,5 @@
 import dayjs from 'dayjs'
+import { Challenge } from './interface'
 
 type languages = 'en-US' | 'pt-BR'
 
@@ -65,3 +66,16 @@ export const colors = [
   "#ffffff",
   "#000000"
 ]
+
+export const resolveListWithoutDuplicatedTags = (challenges: Array<Challenge>) => {
+  const set = new Set<string>()
+
+  challenges.forEach(item => item.metadata.tags.forEach(tag => set.add(tag)))
+
+  const listOfTags = Array.from(set)
+
+  listOfTags.sort()
+
+  return listOfTags
+
+}
