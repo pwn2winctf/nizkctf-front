@@ -19,10 +19,9 @@ onmessage = async function (event) {
         result: hash
       })
     } catch (err) {
-      console.error(err)
       postMessage({
         message: 'error',
-        result: err
+        result: err.message
       })
     }
   }

@@ -24,7 +24,7 @@ const claimFlag = ({ teamName, flag, challenge }: { teamName: string, flag: stri
 
     const onError = event => {
       worker.terminate()
-      reject(event.data.result)
+      reject(new Error(event.data.result))
     }
 
     const action = { ready: onReady, completed: onCompleted, error: onError }
