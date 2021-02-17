@@ -1,14 +1,19 @@
 import React, { useState } from 'react'
 import { GetStaticPaths, GetStaticProps, NextPage } from 'next'
 import Head from 'next/head'
+import { useRouter } from 'next/router'
 
 
 import ReactMarkdown from 'react-markdown'
+import { Button, Col, Container, Form, Row } from 'react-bootstrap'
 
 import { Challenge } from '../../interface'
 
+import Navbar from '../../components/Navbar'
+
 import { getChallengeInfo, getChallengesId } from '../../lib/challenges'
 import claimFlag from '../../lib/claimFlag'
+import { resolveLanguage } from '../../utils'
 
 interface ChallengePageProps {
   challenge: Challenge
@@ -25,25 +30,70 @@ const challengeMeta = {
 }
 
 const ChallengePage: NextPage<ChallengePageProps> = ({ challenge }) => {
+  const router = useRouter()
+  const locale = resolveLanguage(router.locale)
+  const translation = translations[locale]
+
 
   const [flag, setFlag] = useState<string>('CTF-BR{123}')
-  const handleSubmit = () => claimFlag({ teamName, flag, challenge: challengeMeta }).then(r => console.log(r))
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+
+    try {
+      const proof = await claimFlag({ teamName, flag, challenge: challengeMeta })
+      alert(proof)
+
+      // TODO SUBMIT PROOF
+    } catch (err) {
+      alert(err.message)
+      console.error(err)
+    }
+
+  }
 
   return (
     <>
       <Head>
         <title>{challenge.metadata.title}</title>
       </Head>
-      <section>
-        <h2>{challenge.metadata.title}</h2>
-        <ReactMarkdown>
-          {challenge.description}
-        </ReactMarkdown>
-      </section>
-      <input type='text' onChange={event => setFlag(event.target.value)} value={flag} />
-      <button onClick={() => handleSubmit()}>Clique</button>
+      <Navbar />
+      <Container style={{ marginTop: 55 }} className='pt-3'>
+        <Row>
+          <Col sm='12'>
+            <h2 className='text-center'>{challenge.metadata.title}</h2>
+          </Col>
+        </Row>
+        <Row>
+          <Col sm='12'>
+            <ReactMarkdown>
+              {challenge.description}
+            </ReactMarkdown>
+          </Col>
+        </Row>
+        <Row className='mt-3 mb-3 d-flex justify-content-center'>
+          <Col sm='6'>
+            <Form className='d-flex flex-column justify-content-center align-items-center' onSubmit={handleSubmit}>
+              <Form.Group>
+                <Form.Control type='text' placeholder='CTF-BR{...}' value={flag} onChange={event => setFlag(event.target.value)} />
+              </Form.Group>
+              <Button variant='primary' type='submit'>
+                {translation.submit}
+              </Button>
+            </Form>
+          </Col>
+        </Row>
+      </Container>
     </>
   )
+}
+
+const translations = {
+  'en-US': {
+    submit: 'Submit',
+  },
+  'pt-BR': {
+    submit: 'Enviar'
+  },
 }
 
 export const getStaticProps: GetStaticProps = async ({ params, locale }) => {
