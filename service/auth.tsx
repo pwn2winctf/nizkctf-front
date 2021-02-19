@@ -35,5 +35,18 @@ export const logout = async () => {
 }
 
 export const login = async ({ email, password }: { email: string, password: string }) => {
-  await firebase.auth().signInWithEmailAndPassword(email, password)
+  const userCredentials = await firebase.auth().signInWithEmailAndPassword(email, password)
+
+  if (!userCredentials.user.emailVerified) {
+    await userCredentials.user.sendEmailVerification()
+    await logout()
+    throw new Error('Check your email to confirm your account')
+  }
+}
+
+export const signUp = async ({ email, password, name }: { name: string, email: string, password: string }) => {
+  const userCredentials = await firebase.auth().createUserWithEmailAndPassword(email, password)
+
+  await Promise.all([userCredentials.user.updateProfile({ displayName: name }),
+  userCredentials.user.sendEmailVerification()])
 }
