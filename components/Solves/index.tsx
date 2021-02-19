@@ -20,13 +20,15 @@ const Solves: React.FC<SolvesProperties> = ({ list }) => {
       <Card.Header>{translation.title}</Card.Header>
       <Card.Body style={{ height: 'calc(100vh - 150px)', overflow: 'scroll' }}>
         <Card.Text>
-          {list.map(({ challenge, datetime, team }) => (
-            <p>
-              <span className='font-weight-bold'>
-                [{formatDateByLanguage(datetime, locale)}] {team}
-              </span>
-              {' '}{translation.solved} {challenge}</p>
-          ))}
+          <>
+            {list.map(({ challenge, datetime, team }) => (
+              <p key={datetime.toString()}>
+                <span className='font-weight-bold'>
+                  [{formatDateByLanguage(datetime, locale)}] {team}
+                </span>
+                {' '}{translation.solved} {challenge}</p>
+            ))}
+          </>
         </Card.Text>
       </Card.Body>
     </Card>

@@ -4,15 +4,16 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import useSWR from 'swr'
+
 import { Badge, Card, Col, Container, Nav, Row } from 'react-bootstrap'
 
 import { Challenge } from '../../interface'
 
 import { getChallenges } from '../../lib/challenges'
 import { fetchSimpleSolvesList, countSolves, getSimpleSolvesList, SOLVES_URL } from '../../lib/solves'
+import { computeScore, resolveLanguage, resolveListWithoutDuplicatedTags } from '../../utils'
 
 import Navbar from '../../components/Navbar'
-import { computeScore, resolveLanguage, resolveListWithoutDuplicatedTags } from '../../utils'
 
 interface ChallengesPageProps {
   allPostsData: Array<Challenge>
@@ -62,7 +63,7 @@ const ChallengesPage: NextPage<ChallengesPageProps> = (props) => {
             </Nav.Item>
 
             {tags.map(tag => (
-              <Nav.Item className='mr-1'>
+              <Nav.Item className='mr-1' key={tag}>
                 <Nav.Link eventKey={tag} onClick={() => setSeletedTag(tag)}>{tag}</Nav.Link>
               </Nav.Item>
             ))}
