@@ -1,17 +1,19 @@
-import dayjs from 'dayjs'
 import { NextPage } from 'next'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import { useState } from 'react'
 
+import { Col, Container, Row, Table } from 'react-bootstrap'
 import { Line } from 'react-chartjs-2'
+import useSWR from 'swr'
+import Navbar from '../../components/Navbar'
 
-import { Challenge, Standing } from '../../interface'
+import { Standing } from '../../interface'
 
-import { getStandingsList } from '../../lib/solves'
-import { computeScore, fromUnixToDate, colors } from '../../utils'
+import { fetchStandingsList, getStandingsList, SOLVES_URL } from '../../lib/solves'
+import { computeScore, fromUnixToDate, colors, resolveLanguage } from '../../utils'
 
 interface RankingPageProps {
+  standings: Standing[],
   topStandings: Standing[],
   scoreAxis: {
     [team: string]: number[];
@@ -86,10 +88,16 @@ const options = {
   }
 }
 
-const RankingPage: NextPage<RankingPageProps> = ({ topStandings, scoreAxis, timeAxis }) => {
-  const router = useRouter()
+const RankingPage: NextPage<RankingPageProps> = (props) => {
+  const { topStandings, scoreAxis, timeAxis } = props
 
-  const timeAxisDate= timeAxis.map(fromUnixToDate)
+  const router = useRouter()
+  const locale = resolveLanguage(router.locale)
+  const translation = translations[locale]
+
+  const timeAxisDate = timeAxis.map(fromUnixToDate)
+
+  const { data: standings } = useSWR(SOLVES_URL, fetchStandingsList, { initialData: props.standings })
 
   const defaultOptions = {
     fill: false,
@@ -108,17 +116,43 @@ const RankingPage: NextPage<RankingPageProps> = ({ topStandings, scoreAxis, time
   return (
     <>
       <Head>
-        <title>Ranking</title>
+        <title>{translation.title}</title>
       </Head>
-      <section>
-        <h2>Ranking</h2>
-        <Line data={{labels:timeAxisDate, datasets}} options={options} />
-      </section>
+      <Navbar />
+      <Container style={{ marginTop: 55 }} className='pt-3'>
+        <Row>
+          <Col sm='12' style={{ minHeight: '70vh', maxHeight: '100vh' }}>
+            <Line data={{ labels: timeAxisDate, datasets }} options={options} />
+          </Col>
+        </Row>
+        <Row className='mt-4'>
+          <Col sm='12'>
+            <Table striped bordered hover>
+              <thead>
+                <tr>
+                  <th>{translation.position}</th>
+                  <th>{translation.team}</th>
+                  <th>{translation.country}</th>
+                  <th>{translation.score}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {standings?.map(item => (<tr key={item.team}>
+                  <td>{item.pos}</td>
+                  <td>{item.team}</td>
+                  <td></td>
+                  <td>{item.score}</td>
+                </tr>))}
+              </tbody>
+            </Table>
+          </Col>
+        </Row>
+      </Container>
     </>
   )
 }
 
-export async function getStaticProps({ locale }) {
+export async function getStaticProps() {
   const standings = await getStandingsList()
 
   const {
@@ -128,6 +162,7 @@ export async function getStaticProps({ locale }) {
   } = resolveAxisAndTopSolves(standings)
   return {
     props: {
+      standings,
       topStandings,
       timeAxis,
       scoreAxis
@@ -200,6 +235,23 @@ const resolveAxisAndTopSolves = (standings: Standing[]) => {
     scoreAxis,
     topStandings
   }
+}
+
+const translations = {
+  'en-US': {
+    title: 'Ranking - NIZKCTF',
+    position: 'Position',
+    team: 'Team',
+    country: 'Countries',
+    score: 'Score'
+  },
+  'pt-BR': {
+    title: 'Ranking - NIZKCTF',
+    position: 'Posição',
+    team: 'Time',
+    country: 'Países',
+    score: 'Pontuação'
+  },
 }
 
 
