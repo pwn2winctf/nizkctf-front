@@ -1,4 +1,4 @@
-import { Score, Solve, Standing } from "../interface"
+import { Score, Solve } from "../interface"
 
 export const SOLVES_URL = new URL('/2020submissions/accepted-submissions.json', 'https://pwn2.win').toString()
 
