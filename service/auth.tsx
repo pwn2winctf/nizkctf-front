@@ -33,3 +33,7 @@ export const useAuth = () => useContext(AuthContext)
 export const logout = async () => {
   await firebase.auth().signOut()
 }
+
+export const login = async ({ email, password }: { email: string, password: string }) => {
+  await firebase.auth().signInWithEmailAndPassword(email, password)
+}
