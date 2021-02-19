@@ -19,13 +19,9 @@ const News: React.FC<NewsProperties> = ({ list }) => {
     <Card>
       <Card.Header>{translation.title}</Card.Header>
       <Card.Body style={{ height: 'calc(100vh - 150px)', overflow: 'scroll' }}>
-        <Card.Text>
-          <>
-            {list.map(({ msg, datetime }) => (
-              <p key={datetime.toString()}><span className='font-weight-bold'>[{formatDateByLanguage(datetime, locale)}]</span> {msg}</p>
-            ))}
-          </>
-        </Card.Text>
+        {list.map(({ msg, datetime }) => (
+          <Card.Text key={datetime.toString()}><span className='font-weight-bold'>[{formatDateByLanguage(datetime, locale)}]</span> {msg}</Card.Text>
+        ))}
       </Card.Body>
     </Card>
   )
