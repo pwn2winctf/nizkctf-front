@@ -78,7 +78,7 @@ const SignUpPage: NextPage = () => {
     return () => {
       cancelToken.cancel()
     }
-  }, [])
+  }, [user])
 
   if (!isLoading && !user) {
     router.replace('/', null, { locale })
@@ -108,6 +108,7 @@ const SignUpPage: NextPage = () => {
       const team = await registerTeam(mappedValue)
 
       setMe({ ...me, team })
+      localStorage.setItem('me', JSON.stringify({ ...me, team }))
 
       swal.fire(
         translation.modal.successfullyTitle,
