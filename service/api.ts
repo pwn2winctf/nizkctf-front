@@ -60,6 +60,9 @@ export interface Team {
   members: string[]
 }
 
+export interface Solves {
+  [key: string]: number
+}
 
 
 export const listTeams = async (): Promise<Omit<Team, 'id'>[]> => {
@@ -91,4 +94,14 @@ export const registerTeam = async ({ name, countries }: { name: string, countrie
   const team: Omit<Team, 'id'> = await myFetch(url, { method: 'POST', headers: { Authorization: token }, body }).then(response => response.data)
 
   return team
+}
+
+export const submitFlag = async ({ proof, teamId, challengeId }: { proof: string, teamId: string, challengeId: string }): Promise<Solves> => {
+  const token = getTokenFromLocalStorage()
+  const url = new URL(`/teams/${teamId}/solves`, API_BASE_URL).toString()
+
+  const body = JSON.stringify({ proof, challengeId })
+  const solves: Solves = await myFetch(url, { method: 'POST', headers: { Authorization: token }, body }).then(response => response.data)
+
+  return solves
 }
