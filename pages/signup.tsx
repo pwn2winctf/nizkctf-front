@@ -39,7 +39,7 @@ const SignUpPage: NextPage = () => {
         translation.modal.successfullyTitle,
         '',
         'success'
-      )
+      ).then(() => router.replace('/user', null, { locale }))
     } catch (err) {
       swal.fire(
         translation.modal.errorTitle,
