@@ -77,5 +77,6 @@ export const resolveListWithoutDuplicatedTags = (challenges: Array<Challenge>) =
   listOfTags.sort()
 
   return listOfTags
-
 }
+
+export const getTokenFromLocalStorage = () => localStorage.getItem('token')
