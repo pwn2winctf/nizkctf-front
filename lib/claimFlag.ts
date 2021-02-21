@@ -1,6 +1,6 @@
 import { ChallengeMetadata } from '../interface'
 
-const claimFlag = ({ teamName, flag, challenge }: { teamName: string, flag: string, challenge: Pick<ChallengeMetadata, 'memlimit' | 'opslimit' | 'pk' | 'salt'> }) =>
+const claimFlag = ({ teamName, flag, challenge }: { teamName: string, flag: string, challenge: Pick<ChallengeMetadata, 'memlimit' | 'opslimit' | 'pk' | 'salt'> }): Promise<string> =>
   new Promise((resolve, reject) => {
     const worker = new Worker('/workers/submit.worker.js', {
       type: 'module',
