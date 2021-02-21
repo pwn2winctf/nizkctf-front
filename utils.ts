@@ -1,5 +1,6 @@
 import dayjs from 'dayjs'
 import { Challenge } from './interface'
+import { Team } from './service/api'
 
 type languages = 'en-US' | 'pt-BR'
 
@@ -80,3 +81,11 @@ export const resolveListWithoutDuplicatedTags = (challenges: Array<Challenge>) =
 }
 
 export const getTokenFromLocalStorage = () => localStorage.getItem('token')
+
+export const getMeFromLocalStorage = () => {
+  const data = localStorage.getItem('me')
+
+  const jsonData: { uuid: string, displayName: string, email: string, team?: Team } = JSON.parse(data)
+
+  return jsonData
+}
