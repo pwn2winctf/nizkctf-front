@@ -78,6 +78,8 @@ export const getMe = async ({ cancelToken }: { cancelToken?: CancelToken }): Pro
     signal: cancelToken?.signal
   }).then(response => response.data)
 
+  localStorage.setItem('me', JSON.stringify(me))
+
   return me
 }
 
