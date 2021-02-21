@@ -6,7 +6,8 @@ const translations = {
     faq: 'FAQ',
     signUp: 'Sign up',
     signIn: 'Sign in',
-    logout: 'Logout'
+    logout: 'Logout',
+    profile: 'My profile',
   },
   'pt-BR': {
     challenges: 'Desafios',
@@ -15,7 +16,8 @@ const translations = {
     faq: 'FAQ',
     signUp: 'Registrar-se',
     signIn: 'Login',
-    logout: 'Sair'
+    logout: 'Sair',
+    profile: 'Meu perfil',
   },
 }
 

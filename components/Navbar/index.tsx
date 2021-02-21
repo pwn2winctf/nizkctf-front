@@ -37,7 +37,12 @@ const Navbar: React.FC = () => {
         </Nav>
 
         <Nav className='ml-auto'>
-          {user ? <Nav.Link onClick={() => logout()}>{translation.logout}</Nav.Link>
+          {user ? <>
+            <Link href='/user' passHref locale={locale} prefetch={false}>
+              <Nav.Link>{translation.profile}</Nav.Link>
+            </Link>
+            <Nav.Link onClick={() => logout()}>{translation.logout}</Nav.Link>
+          </>
             :
             <>
               <Link href='/login' passHref locale={locale} prefetch={false}>
