@@ -6,6 +6,7 @@ import { useRouter } from 'next/router'
 
 import ReactMarkdown from 'react-markdown'
 import { Button, Col, Container, Form, Row } from 'react-bootstrap'
+import swal from 'sweetalert2'
 
 import { Challenge } from '../../interface'
 
@@ -13,20 +14,11 @@ import Navbar from '../../components/Navbar'
 
 import { getChallengeInfo, getChallengesId } from '../../lib/challenges'
 import claimFlag from '../../lib/claimFlag'
-import { resolveLanguage } from '../../utils'
+import { getMeFromLocalStorage, resolveLanguage } from '../../utils'
+import { submitFlag } from '../../service/api'
 
 interface ChallengePageProps {
   challenge: Challenge
-}
-
-const teamName = 'lorhan'
-const challengeMeta = {
-  id: 'test',
-  name: 'Desafio teste',
-  pk: 'AwTtUaLtzpHyxVY0oQvEP398tPPK8iLKjsjgmvjn+y8=',
-  salt: 'KoVNy6Blq3vFpmdgAXO9MQ==',
-  opslimit: 2,
-  memlimit: 67108864
 }
 
 const ChallengePage: NextPage<ChallengePageProps> = ({ challenge }) => {
@@ -35,20 +27,41 @@ const ChallengePage: NextPage<ChallengePageProps> = ({ challenge }) => {
   const translation = translations[locale]
 
 
-  const [flag, setFlag] = useState<string>('CTF-BR{123}')
+  const [flag, setFlag] = useState<string>('')
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
     try {
-      const proof = await claimFlag({ teamName, flag, challenge: challengeMeta })
-      alert(proof)
+      const me = getMeFromLocalStorage()
 
-      // TODO SUBMIT PROOF
+      await swal.fire({
+        title: translation.modal.validatingFlag,
+        didOpen: async () => {
+          swal.showLoading()
+          const proof = await claimFlag({ teamName: me.team.name, flag, challenge: challenge.metadata })
+
+          await submitFlag({ proof, challengeId: challenge.metadata.id, teamId: me.team.id })
+
+
+          swal.fire(
+            translation.modal.successfullyTitle,
+            '',
+            'success'
+          )
+        },
+
+      })
     } catch (err) {
-      alert(err.message)
       console.error(err)
-    }
 
+      const message = (err.data?.errors && err.data.errors[0].message) || err.message
+
+      swal.fire(
+        translation.modal.errorTitle,
+        message,
+        'error'
+      )
+    }
   }
 
   return (
@@ -90,9 +103,19 @@ const ChallengePage: NextPage<ChallengePageProps> = ({ challenge }) => {
 const translations = {
   'en-US': {
     submit: 'Submit',
+    modal: {
+      validatingFlag: 'Validating flag',
+      successfullyTitle: 'Flag successfully submitted!',
+      errorTitle: 'Error!',
+    },
   },
   'pt-BR': {
-    submit: 'Enviar'
+    submit: 'Enviar',
+    modal: {
+      validatingFlag: 'Validando flag',
+      successfullyTitle: 'Flag submetida com sucesso!',
+      errorTitle: 'Ops, aconteceu um erro!',
+    },
   },
 }
 
