@@ -1,15 +1,26 @@
 import React, { useState, useEffect, createContext, useContext } from 'react'
+import { useRouter } from 'next/router'
 
 import firebaseClient from './firebase'
 import firebase from 'firebase/app'
 import 'firebase/auth'
 
-const AuthContext = createContext<{ user?: firebase.User }>({})
+import swal from 'sweetalert2'
+
+import { resolveLanguage } from '../utils'
+
+const AuthContext = createContext<{ user?: firebase.User, isLoading?: boolean }>({})
 
 export const AuthProvider = ({ children }) => {
   firebaseClient()
 
   const [user, setUser] = useState<firebase.User>()
+  const [loading, setLoading] = useState<boolean>(true)
+
+  const router = useRouter()
+  const locale = resolveLanguage(router.locale)
+
+  const translation = translations[locale]
 
   useEffect(() => {
     return firebase.auth().onIdTokenChanged(async (user) => {
@@ -21,10 +32,29 @@ export const AuthProvider = ({ children }) => {
         localStorage.setItem('token', token)
         setUser(user)
       }
+      setLoading(false)
+    }, error => {
+      swal.fire(translation.errorTitle, `${error.message}. ${translation.errorText}`, 'error')
+      console.error(error)
     })
   }, [])
 
-  return (<AuthContext.Provider value={{ user }}>{children}</AuthContext.Provider>)
+  return (
+    <AuthContext.Provider value={{ user, isLoading: loading }}>
+      {children}
+    </AuthContext.Provider>
+  )
+}
+
+const translations = {
+  'en-US': {
+    errorTitle: 'Error!',
+    errorText: 'Reload the page, if the error persists please contact support'
+  },
+  'pt-BR': {
+    errorTitle: 'Ops, aconteceu um erro!',
+    errorText: 'Recarregue a página, se o erro persistir entre em contato com o suporte',
+  },
 }
 
 
