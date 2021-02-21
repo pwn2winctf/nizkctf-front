@@ -1,3 +1,7 @@
+export const APP_ENV = process.env.APP_ENV === 'production' ? 'production' : 'development'
+
+export const API_BASE_URL = APP_ENV === 'production' ? 'https://nizkctf.herokuapp.com' : 'http://localhost:8080'
+
 export const validCountries = [
     'ad',
     'ae',

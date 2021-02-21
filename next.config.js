@@ -4,6 +4,7 @@ module.exports = {
     defaultLocale: 'en-US',
   },
   env: {
+    APP_ENV: process.env.APP_ENV || 'development',
     NEXT_PUBLIC_FIREBASE_API_KEY: "AIzaSyDFmPo-2SKUpw8BGrF9wegT1vGzNP8l8wM",
     NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: "test-pwn2win.firebaseapp.com",
     NEXT_PUBLIC_FIREBASE_DATABASE_URL: "https://test-pwn2win.firebaseio.com",
