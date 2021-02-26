@@ -178,8 +178,13 @@ const SignUpPage: NextPage = () => {
       <Container style={{ marginTop: 55 }} className='pt-3'>
         {user && !user.emailVerified && <Row>
           <Col sm='12'>
-            <Alert variant='warning'>
-              {translation.verifyEmail}
+            <Alert variant='warning' className='d-flex flex-row align-items-center'>
+              <span className='flex-grow-1'>{translation.verifyEmail}</span>
+              <div className=''>
+              <Button className='ml-auto' variant='primary' onClick={() => router.reload()}>
+                {translation.alreadyChecked}
+              </Button>
+              </div>
             </Alert>
           </Col>
         </Row>
@@ -259,6 +264,7 @@ const translations = {
     },
     reviewData: 'Review the data',
     verifyEmail: 'Check your email to confirm your account and be able to register your team!',
+    alreadyChecked: 'I already checked',
   },
   'pt-BR': {
     loading: 'Carregando',
@@ -276,6 +282,7 @@ const translations = {
     },
     reviewData: 'Revise os dados',
     verifyEmail: 'Verifique seu e-mail para confirmar sua conta e poder cadastrar seu time!',
+    alreadyChecked: 'Já verifiquei',
   },
 }
 
