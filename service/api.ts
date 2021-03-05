@@ -65,9 +65,9 @@ export interface Solves {
 }
 
 
-export const listTeams = async (): Promise<Omit<Team, 'id'>[]> => {
+export const listTeams = async (): Promise<Omit<Team, 'members'>[]> => {
   const url = new URL('/teams', API_BASE_URL).toString()
-  const teams: Omit<Team, 'id'>[] = await myFetch(url).then(async response => response.data)
+  const teams: Omit<Team, 'members'>[] = await myFetch(url).then(async response => response.data)
 
   return teams
 }
