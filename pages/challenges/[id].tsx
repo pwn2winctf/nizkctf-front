@@ -34,23 +34,22 @@ const ChallengePage: NextPage<ChallengePageProps> = ({ challenge }) => {
     try {
       const me = getMeFromLocalStorage()
 
-      await swal.fire({
+      swal.fire({
         title: translation.modal.validatingFlag,
         didOpen: async () => {
           swal.showLoading()
-          const proof = await claimFlag({ teamName: me.team.name, flag, challenge: challenge.metadata })
-
-          await submitFlag({ proof, challengeId: challenge.metadata.id, teamId: me.team.id })
-
-
-          swal.fire(
-            translation.modal.successfullyTitle,
-            '',
-            'success'
-          )
         },
-
       })
+
+      const proof = await claimFlag({ teamName: me.team.name, flag, challenge: challenge.metadata })
+      await submitFlag({ proof, challengeId: challenge.metadata.id, teamId: me.team.id })
+
+
+      await swal.fire(
+        translation.modal.successfullyTitle,
+        '',
+        'success'
+      )
     } catch (err) {
       console.error(err)
 
@@ -145,7 +144,7 @@ export const getStaticPaths: GetStaticPaths = async ({ locales }) => {
 
   return {
     paths,
-    fallback: false
+    fallback: 'blocking'
   }
 
 }
