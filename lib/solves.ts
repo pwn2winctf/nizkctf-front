@@ -1,6 +1,7 @@
+import { API_BASE_URL } from "../constants"
 import { Score, Solve } from "../interface"
 
-export const SOLVES_URL = new URL('/2020submissions/accepted-submissions.json', 'https://pwn2.win').toString()
+export const SOLVES_URL = new URL('/score',API_BASE_URL).toString()
 
 export const getSimpleSolvesList = async () => {
   const sortedSolves: Array<{ team: string, challenge: string, datetime: number }> = await fetchSimpleSolvesList(SOLVES_URL)
