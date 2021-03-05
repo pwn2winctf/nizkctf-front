@@ -1,6 +1,5 @@
+import { CHALLENGES_BASE_URL } from "../constants"
 import { Challenge, ChallengeDescription, ChallengeMetadata } from "../interface"
-
-const CHALLENGES_BASE_URL = 'https://pwn2.win/2020/challenges/'
 
 export const getChallenges = async (language: string): Promise<Challenge[]> => {
   const challengesId: string[] = await getChallengesId()
@@ -17,10 +16,10 @@ export const getChallengesId = async (): Promise<string[]> => {
 }
 
 export const getChallengeInfo = async (challengeId: string, language: string): Promise<Challenge> => {
-  const urlChallengeJSON = new URL(`${challengeId}.json`, CHALLENGES_BASE_URL).toString()
+  const urlChallengeJSON = `${CHALLENGES_BASE_URL}/${challengeId}.json`
 
   const extension = resolveExtensionByLanguage(language)
-  const urlChallengeDescription = new URL(`${challengeId}.${extension}`, CHALLENGES_BASE_URL).toString()
+  const urlChallengeDescription = `${CHALLENGES_BASE_URL}/${challengeId}.${extension}`
 
   const fetchMetadata = fetch(urlChallengeJSON).then(response => response.json())
   const fetchDescription = fetch(urlChallengeDescription).then(response => response.text())

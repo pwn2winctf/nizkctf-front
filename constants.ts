@@ -1,6 +1,7 @@
 export const APP_ENV = process.env.APP_ENV === 'production' ? 'production' : 'development'
 
 export const API_BASE_URL = APP_ENV === 'production' ? 'https://nizkctf.herokuapp.com' : 'http://localhost:8080'
+export const CHALLENGES_BASE_URL = APP_ENV === 'production' ? 'https://nizkctf.herokuapp.com' : 'https://ctf-br.github.io/ranking/challenges/'
 
 export const validCountries = [
     'ad',
