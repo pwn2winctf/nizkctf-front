@@ -231,7 +231,7 @@ const SignUpPage: NextPage = () => {
                           displayValue='name'
                         />
                       </Form.Group>
-                      <Button variant='primary' type='submit' disabled={values.countries.length === 0 || values.name.length === 0}>
+                      <Button variant='primary' type='submit' disabled={values.name.length === 0}>
                         {translation.submit}
                       </Button>
                     </Form>
