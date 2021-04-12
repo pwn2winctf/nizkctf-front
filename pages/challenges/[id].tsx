@@ -25,6 +25,7 @@ const ChallengePage: NextPage<ChallengePageProps> = ({ challenge }) => {
   const router = useRouter()
   const locale = resolveLanguage(router.locale)
   const translation = translations[locale]
+  const me = getMeFromLocalStorage()
 
 
   const [flag, setFlag] = useState<string>('')
@@ -32,8 +33,6 @@ const ChallengePage: NextPage<ChallengePageProps> = ({ challenge }) => {
     event.preventDefault()
 
     try {
-      const me = getMeFromLocalStorage()
-
       swal.fire({
         title: translation.modal.validatingFlag,
         didOpen: async () => {
@@ -41,8 +40,8 @@ const ChallengePage: NextPage<ChallengePageProps> = ({ challenge }) => {
         },
       })
 
-      const proof = await claimFlag({ teamName: me.team.name, flag, challenge: challenge.metadata })
-      await submitFlag({ proof, challengeId: challenge.metadata.id, teamId: me.team.id })
+      const proof = await claimFlag({ teamName: me.team?.name, flag, challenge: challenge.metadata })
+      await submitFlag({ proof, challengeId: challenge.metadata.id, teamId: me.team?.id })
 
 
       await swal.fire(
@@ -88,7 +87,7 @@ const ChallengePage: NextPage<ChallengePageProps> = ({ challenge }) => {
               <Form.Group>
                 <Form.Control type='text' placeholder='CTF-BR{...}' value={flag} onChange={event => setFlag(event.target.value)} />
               </Form.Group>
-              <Button variant='primary' type='submit'>
+              <Button variant='primary' type='submit' disabled={!me.team}>
                 {translation.submit}
               </Button>
             </Form>
