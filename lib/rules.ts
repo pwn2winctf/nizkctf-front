@@ -1,4 +1,4 @@
-const RULE_BASE_URL = 'https://pwn2.win'
+const RULE_BASE_URL = 'https://pwn2winctf.github.io'
 
 export const getRules = async (language: string) => {
   const path = language === 'pt-BR' ? '/nizkctf-content/regras.md' : '/nizkctf-content/rules.md'

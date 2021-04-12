@@ -1,6 +1,6 @@
 import { Message } from '../interface'
 
-export const NEWS_URL = new URL('/2020submissions/news.json', 'https://pwn2.win').toString()
+export const NEWS_URL = new URL('/2020submissions/news.json', 'https://pwn2winctf.github.io').toString()
 
 export const getNews = async () => {
   const news: Message[] = await fetchNews(NEWS_URL)

@@ -1,4 +1,4 @@
-const FAQ_BASE_URL = 'https://pwn2.win'
+const FAQ_BASE_URL = 'https://pwn2winctf.github.io'
 
 export const getFAQ = async () => {
   const url = new URL('/NIZKCTF-js/FAQ.md', FAQ_BASE_URL).toString()
