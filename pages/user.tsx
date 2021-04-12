@@ -41,7 +41,6 @@ const SignUpPage: NextPage = () => {
 
   const [me, setMe] = useState<{
     uuid: string;
-    email: string;
     team?: Pick<Team, 'name' | 'countries'>
   }>()
   const [values, setValues] = useState<{ countries: { value: string, name: string }[], name: string }>({ countries: [], name: '' })

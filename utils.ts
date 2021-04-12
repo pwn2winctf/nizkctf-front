@@ -85,7 +85,7 @@ export const getTokenFromLocalStorage = () => localStorage.getItem('token')
 export const getMeFromLocalStorage = () => {
   const data = localStorage.getItem('me')
 
-  const jsonData: { uuid: string, displayName: string, email: string, team?: Team } = JSON.parse(data)
+  const jsonData: { uuid: string, team?: Team } = JSON.parse(data)
 
   return jsonData
 }
