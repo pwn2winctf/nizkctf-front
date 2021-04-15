@@ -8,6 +8,7 @@ import 'firebase/auth'
 import swal from 'sweetalert2'
 
 import { resolveLanguage } from '../utils'
+import { registerUser } from './api'
 
 const AuthContext = createContext<{ user?: firebase.User, isLoading?: boolean }>({})
 
@@ -74,9 +75,14 @@ export const login = async ({ email, password }: { email: string, password: stri
   }
 }
 
-export const signUp = async ({ email, password, name }: { name: string, email: string, password: string }) => {
+export const signUp = async ({ email, password, name, shareInfo }: { name: string, email: string, password: string, shareInfo: boolean }) => {
   const userCredentials = await firebase.auth().createUserWithEmailAndPassword(email, password)
 
+  const token = await userCredentials.user.getIdToken()
+  localStorage.setItem('token', token)
+
   await Promise.all([userCredentials.user.updateProfile({ displayName: name }),
-  userCredentials.user.sendEmailVerification()])
+  userCredentials.user.sendEmailVerification(),
+  registerUser({ shareInfo })
+  ])
 }

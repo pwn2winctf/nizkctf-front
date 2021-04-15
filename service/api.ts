@@ -86,6 +86,13 @@ export const getMe = async ({ cancelToken }: { cancelToken?: CancelToken }): Pro
   return me
 }
 
+export const registerUser = async ({ shareInfo }: { shareInfo: boolean }): Promise<void> => {
+  const token = getTokenFromLocalStorage()
+  const url = new URL('/users', API_BASE_URL).toString()
+
+  const body = JSON.stringify({ shareInfo })
+  await myFetch(url, { method: 'POST', headers: { Authorization: token }, body })
+}
 export const registerTeam = async ({ name, countries }: { name: string, countries: string[] }): Promise<Omit<Team, 'id'>> => {
   const token = getTokenFromLocalStorage()
   const url = new URL('/teams', API_BASE_URL).toString()
