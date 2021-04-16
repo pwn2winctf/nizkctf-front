@@ -142,6 +142,7 @@ const SignUpPage: NextPage = () => {
                   label={translation.shareInfo}
                   value='shareInfo'
                   checked={values.shareInfo}
+                  style={{ maxWidth: 400 }}
                   onChange={event => setValues({ ...values, shareInfo: !values.shareInfo })} />
               </Form.Group>
               <Button variant='primary' type='submit' disabled={!isFilled}>
@@ -164,7 +165,7 @@ const translations = {
     password: 'Password',
     confirmPassword: 'Confirm password',
     name: 'Name',
-    shareInfo: 'I am interested in receiving possible job offers from sponsors',
+    shareInfo: 'I am interested in receiving job offers and invitations to private sponsor bug bounty programs.',
     modal: {
       infoTitle: 'This user will be used by your team to submit flags',
       successfullyTitle: 'Check your email to complete your registration!',
@@ -181,7 +182,7 @@ const translations = {
     password: 'Senha',
     confirmPassword: 'Confirmar senha',
     name: 'Nome',
-    shareInfo: 'Tenho interesse em receber eventuais propostas de\n emprego dos patrocinadores',
+    shareInfo: 'Tenho interesse em receber propostas de emprego e convites para programas de bug bounty privados dos patrocinadores.',
     modal: {
       infoTitle: 'Esse usuário será usado pelo seu time para enviar flags',
       successfullyTitle: 'Verifique seu e-mail para completar seu cadastro!',
