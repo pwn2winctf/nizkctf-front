@@ -51,7 +51,8 @@ export const getStaticProps: GetStaticProps = async ({ locale }) => {
   return {
     props: {
       rules
-    }
+    },
+    revalidate: 1 * 60 * 60 // 1 hour
   }
 }
 
