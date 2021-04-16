@@ -94,7 +94,10 @@ const RankingPage: NextPage<RankingPageProps> = (props) => {
   const translation = translations[locale]
 
 
-  const { data: standings } = useSWR(SOLVES_URL, fetchStandingsList, { initialData: props.standings })
+  const { data: standings } = useSWR(SOLVES_URL, fetchStandingsList, {
+    initialData: props.standings,
+    refreshInterval: 1000 * 5 // 5s
+  })
 
   const {
     timeAxis,
