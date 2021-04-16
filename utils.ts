@@ -82,10 +82,10 @@ export const resolveListWithoutDuplicatedTags = (challenges: Array<Challenge>) =
 
 export const getTokenFromLocalStorage = () => localStorage.getItem('token')
 
-export const getMeFromLocalStorage = () => {
-  const ISSERVER = typeof window === 'undefined'
+export const IS_SERVER = typeof window === 'undefined'
 
-  if (ISSERVER) {
+export const getMeFromLocalStorage = () => {
+  if (IS_SERVER) {
     return {
       uuid: undefined,
       team: undefined
