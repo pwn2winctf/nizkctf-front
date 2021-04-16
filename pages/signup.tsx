@@ -83,6 +83,11 @@ const SignUpPage: NextPage = () => {
       <Navbar />
       <Container style={{ marginTop: 55 }} className='pt-3'>
         <Row>
+          <Col sm='12' className='d-flex flex-column justify-content-center align-items-center'>
+            <h2>Uma conta por time</h2>
+          </Col>
+        </Row>
+        <Row>
           <Col sm='12'>
             <Form className='d-flex flex-column justify-content-center align-items-center' onSubmit={handleSubmit}>
               <Form.Group>
