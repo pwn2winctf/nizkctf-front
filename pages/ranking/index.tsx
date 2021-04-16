@@ -1,4 +1,4 @@
-import { NextPage } from 'next'
+import { GetStaticProps, NextPage } from 'next'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 
@@ -89,15 +89,19 @@ const options = {
 }
 
 const RankingPage: NextPage<RankingPageProps> = (props) => {
-  const { topStandings, scoreAxis, timeAxis } = props
-
   const router = useRouter()
   const locale = resolveLanguage(router.locale)
   const translation = translations[locale]
 
-  const timeAxisDate = timeAxis.map(fromUnixToDate)
 
   const { data: standings } = useSWR(SOLVES_URL, fetchStandingsList, { initialData: props.standings })
+
+  const {
+    timeAxis,
+    scoreAxis,
+    topStandings
+  } = resolveAxisAndTopSolves(standings)
+  const timeAxisDate = timeAxis.map(fromUnixToDate)
 
   const defaultOptions = {
     fill: false,
@@ -111,7 +115,7 @@ const RankingPage: NextPage<RankingPageProps> = (props) => {
     borderColor: colors[index],
     ...defaultOptions,
     data: scoreAxis[item.team]
-  }));
+  }))
 
   return (
     <>
@@ -152,7 +156,7 @@ const RankingPage: NextPage<RankingPageProps> = (props) => {
   )
 }
 
-export async function getStaticProps() {
+export const getStaticProps: GetStaticProps = async ({ locale }) => {
   const standings = await getStandingsList()
 
   const {
@@ -160,13 +164,15 @@ export async function getStaticProps() {
     scoreAxis,
     topStandings
   } = resolveAxisAndTopSolves(standings)
+
   return {
     props: {
       standings,
       topStandings,
       timeAxis,
       scoreAxis
-    }
+    },
+    revalidate: 5 * 60 // 5 minutes
   }
 }
 
