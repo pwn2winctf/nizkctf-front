@@ -64,6 +64,7 @@ export const useAuth = () => useContext(AuthContext)
 export const logout = async () => {
   await firebase.auth().signOut()
   localStorage.removeItem('token')
+  localStorage.removeItem('me')
 }
 
 export const login = async ({ email, password }: { email: string, password: string }) => {
