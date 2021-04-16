@@ -31,7 +31,7 @@ const ChallengesPage: NextPage<ChallengesPageProps> = (props) => {
 
   const { data: standings } = useSWR(SOLVES_URL, fetchSimpleSolvesList, {
     initialData: props.standings,
-    refreshInterval: 1000 * 15 // 15s
+    refreshInterval: 1000 * 5 // 5s
   })
 
   const solves = countSolves(standings)
