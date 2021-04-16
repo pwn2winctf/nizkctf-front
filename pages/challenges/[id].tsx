@@ -32,6 +32,20 @@ const ChallengePage: NextPage<ChallengePageProps> = ({ challenge }) => {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
+    if (!me?.team) {
+      const { isConfirmed } = await swal.fire({
+        title: translation.modal.warningLogin,
+        confirmButtonText: translation.signIn,
+        showCloseButton: true
+      })
+
+      if (isConfirmed) {
+        router.push('/login', null, { locale })
+      }
+
+      return
+    }
+
     try {
       swal.fire({
         title: translation.modal.validatingFlag,
@@ -87,7 +101,7 @@ const ChallengePage: NextPage<ChallengePageProps> = ({ challenge }) => {
               <Form.Group>
                 <Form.Control type='text' placeholder='CTF-BR{...}' value={flag} onChange={event => setFlag(event.target.value)} />
               </Form.Group>
-              <Button variant='primary' type='submit' disabled={!me.team}>
+              <Button variant='primary' type='submit'>
                 {translation.submit}
               </Button>
             </Form>
@@ -101,7 +115,9 @@ const ChallengePage: NextPage<ChallengePageProps> = ({ challenge }) => {
 const translations = {
   'en-US': {
     submit: 'Submit',
+    signIn: 'Sign in',
     modal: {
+      warningLogin: 'You must be logged in',
       validatingFlag: 'Validating flag',
       successfullyTitle: 'Flag successfully submitted!',
       errorTitle: 'Error!',
@@ -109,7 +125,9 @@ const translations = {
   },
   'pt-BR': {
     submit: 'Enviar',
+    signIn: 'Entrar',
     modal: {
+      warningLogin: 'Você precisa estar logado',
       validatingFlag: 'Validando flag',
       successfullyTitle: 'Flag submetida com sucesso!',
       errorTitle: 'Ops, aconteceu um erro!',
