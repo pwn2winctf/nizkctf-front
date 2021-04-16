@@ -84,7 +84,7 @@ const SignUpPage: NextPage = () => {
       <Container style={{ marginTop: 55 }} className='pt-3'>
         <Row>
           <Col sm='12' className='d-flex flex-column justify-content-center align-items-center'>
-            <h2>Uma conta por time</h2>
+            <h2>{translation.oneAccountPerTeam}</h2>
           </Col>
         </Row>
         <Row>
@@ -166,6 +166,7 @@ const translations = {
     confirmPassword: 'Confirm password',
     name: 'Name',
     shareInfo: 'I am interested in receiving job offers and invitations to private sponsor bug bounty programs.',
+    oneAccountPerTeam: 'One account per team',
     modal: {
       infoTitle: 'This user will be used by your team to submit flags',
       successfullyTitle: 'Check your email to complete your registration!',
@@ -183,6 +184,7 @@ const translations = {
     confirmPassword: 'Confirmar senha',
     name: 'Nome',
     shareInfo: 'Tenho interesse em receber propostas de emprego e convites para programas de bug bounty privados dos patrocinadores.',
+    oneAccountPerTeam: 'Uma conta por time',
     modal: {
       infoTitle: 'Esse usuário será usado pelo seu time para enviar flags',
       successfullyTitle: 'Verifique seu e-mail para completar seu cadastro!',
