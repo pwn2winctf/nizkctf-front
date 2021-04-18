@@ -153,7 +153,7 @@ const RankingPage: NextPage<RankingPageProps> = (props) => {
                 {standings?.map(item => (<tr key={item.team}>
                   <td>{item.pos}</td>
                   <td>{item.team}</td>
-                  <td>{(teamsData.find(team => team.name === item.team)?.countries || []).map(country => <ReactCountryFlag key={country} countryCode={country} aria-label={country} className='mr-2' />)}</td>
+                  <td>{(teamsData?.find(team => team.name === item.team)?.countries || []).map(country => <ReactCountryFlag key={country} countryCode={country} aria-label={country} className='mr-2' />)}</td>
                   <td>{item.score}</td>
                 </tr>))}
               </tbody>
@@ -210,7 +210,7 @@ const resolveAxisAndTopSolves = (standings: Standing[]) => {
   const topStandings = standings.slice(0, topN);
 
   const topSolves: { [teamName: string]: Array<{ id: string, time: number }> } = topStandings.reduce((obj, item) => {
-    const data = Object.entries(item.taskStats).map(task => ({
+    const data = !item?.taskStats ? [] : Object.entries(item.taskStats).map(task => ({
       id: task[0],
       time: task[1].time
     }))
