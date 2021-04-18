@@ -119,7 +119,7 @@ const RankingPage: NextPage<RankingPageProps> = (props) => {
     borderWidth: 2
   };
 
-  const datasets = topStandings.map((item, index) => ({
+  const datasets = topStandings.filter((item, index) => topStandings.findIndex(i => i.team === item.team) === index).map((item, index) => ({
     label: item.team,
     borderColor: colors[index],
     ...defaultOptions,
