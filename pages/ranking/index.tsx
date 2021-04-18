@@ -5,11 +5,14 @@ import { useRouter } from 'next/router'
 import { Col, Container, Row, Table } from 'react-bootstrap'
 import { Line } from 'react-chartjs-2'
 import useSWR from 'swr'
+import ReactCountryFlag from 'react-country-flag'
+
 import Navbar from '../../components/Navbar'
 
 import { Standing } from '../../interface'
 
 import { fetchStandingsList, getStandingsList, SOLVES_URL } from '../../lib/solves'
+import { fetchTeams, TEAMS_URL } from '../../lib/teams'
 import { computeScore, fromUnixToDate, colors, resolveLanguage } from '../../utils'
 
 interface RankingPageProps {
@@ -95,15 +98,18 @@ const RankingPage: NextPage<RankingPageProps> = (props) => {
 
 
   const { data: standings } = useSWR(SOLVES_URL, fetchStandingsList, {
-    initialData: props.standings,
     refreshInterval: 1000 * 5 // 5s
+  })
+
+  const { data: teamsData } = useSWR(TEAMS_URL, fetchTeams, {
+    refreshInterval: 1000 * 15 // 15s
   })
 
   const {
     timeAxis,
     scoreAxis,
     topStandings
-  } = resolveAxisAndTopSolves(standings)
+  } = resolveAxisAndTopSolves(standings || props.standings)
   const timeAxisDate = timeAxis.map(fromUnixToDate)
 
   const defaultOptions = {
@@ -147,7 +153,7 @@ const RankingPage: NextPage<RankingPageProps> = (props) => {
                 {standings?.map(item => (<tr key={item.team}>
                   <td>{item.pos}</td>
                   <td>{item.team}</td>
-                  <td></td>
+                  <td>{(teamsData.find(team => team.name === item.team)?.countries || []).map(country => <ReactCountryFlag key={country} countryCode={country} aria-label={country} className='mr-2' />)}</td>
                   <td>{item.score}</td>
                 </tr>))}
               </tbody>
@@ -183,7 +189,7 @@ const computeListOfSolves = (standings: Standing[]) => {
   let allSolves: Array<{ id: string, time: number }> = []
 
   standings.forEach((standing) => {
-    const item = Object.entries(standing.taskStats).map(([id, task]) => ({
+    const item = !standing?.taskStats ? [] : Object.entries(standing.taskStats).map(([id, task]) => ({
       id: id,
       time: task.time
     }))
