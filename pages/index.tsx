@@ -19,13 +19,10 @@ interface HomePageProps {
 
 const HomePage: NextPage<HomePageProps> = (props) => {
   const { data: news } = useSWR(NEWS_URL, fetchNews, {
-    initialData: props.news,
-
     refreshInterval: 1000 * 60 * 1 //1min
   })
 
   const { data: solves } = useSWR(SOLVES_URL, fetchSimpleSolvesList, {
-    initialData: props.solves,
     refreshInterval: 1000 * 60 * 1 //1min
   })
 
@@ -38,10 +35,10 @@ const HomePage: NextPage<HomePageProps> = (props) => {
       <Container style={{ marginTop: 55 }} className='pt-4' fluid>
         <Row>
           <Col sm={12} lg={6}>
-            <News list={news} />
+            <News list={news || props.news} />
           </Col>
           <Col sm={12} lg={6} className='mt-4 mt-lg-0'>
-            <Solves list={solves} />
+            <Solves list={solves || props.solves} />
           </Col>
         </Row>
       </Container>

@@ -30,11 +30,10 @@ const ChallengesPage: NextPage<ChallengesPageProps> = (props) => {
   const translation = translations[locale]
 
   const { data: standings } = useSWR(SOLVES_URL, fetchSimpleSolvesList, {
-    initialData: props.standings,
     refreshInterval: 1000 * 5 // 5s
   })
 
-  const solves = countSolves(standings)
+  const solves = countSolves(standings || props.standings)
   const tags = resolveListWithoutDuplicatedTags(props.allPostsData)
 
   const [filteredList, setFilteredList] = useState(props.allPostsData)
