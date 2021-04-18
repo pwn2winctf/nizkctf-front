@@ -3,7 +3,7 @@ import React from 'react'
 import { Card } from 'react-bootstrap'
 import { Message } from '../../interface'
 
-import { formatDateByLanguage, resolveLanguage } from '../../utils'
+import { formatUnixDateByLanguage, resolveLanguage } from '../../utils'
 import translations from './translations'
 
 interface NewsProperties {
@@ -20,7 +20,7 @@ const News: React.FC<NewsProperties> = ({ list }) => {
       <Card.Header>{translation.title}</Card.Header>
       <Card.Body style={{ height: 'calc(100vh - 150px)', overflow: 'scroll' }}>
         {list.map(({ msg, datetime }) => (
-          <Card.Text key={datetime.toString()}><span className='font-weight-bold'>[{formatDateByLanguage(datetime, locale)}]</span> {msg}</Card.Text>
+          <Card.Text key={datetime.toString()}><span className='font-weight-bold'>[{formatUnixDateByLanguage(datetime, locale)}]</span> {msg}</Card.Text>
         ))}
       </Card.Body>
     </Card>

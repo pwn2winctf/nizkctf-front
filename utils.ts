@@ -20,6 +20,15 @@ export const formatDateByLanguage = (timestamp: number, language: string) => {
   return dayjs(timestamp).format(formats[language] || defaultFormat)
 }
 
+export const formatUnixDateByLanguage = (timestamp: number, language: string) => {
+  const defaultFormat = 'MM/DD/YYYY HH:mm:ss'
+  const formats = {
+    'pt-BR': 'DD/MM/YYYY HH:mm:ss',
+  }
+
+  return dayjs.unix(timestamp).format(formats[language] || defaultFormat)
+}
+
 export const fromUnixToDate = (timestamp: number) => {
   return dayjs(timestamp).toDate()
 }
