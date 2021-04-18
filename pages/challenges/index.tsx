@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { NextPage } from 'next'
+import { GetStaticProps, NextPage } from 'next'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
@@ -109,7 +109,7 @@ const translations = {
   },
 }
 
-export async function getStaticProps({ locale }) {
+export const getStaticProps: GetStaticProps = async ({ locale }) => {
   const allPostsData = await getChallenges(locale)
   const standings = await getSimpleSolvesList()
 
@@ -119,7 +119,8 @@ export async function getStaticProps({ locale }) {
     props: {
       allPostsData,
       standings
-    }
+    },
+    revalidate: 60 * 2 // 2 minutes
   }
 }
 
