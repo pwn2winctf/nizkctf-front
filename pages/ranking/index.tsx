@@ -150,7 +150,7 @@ const RankingPage: NextPage<RankingPageProps> = (props) => {
                 </tr>
               </thead>
               <tbody>
-                {standings?.map(item => (<tr key={item.team}>
+                {standings?.filter((item, index) => standings.findIndex(i => i.team === item.team) === index).map(item => (<tr key={item.team}>
                   <td>{item.pos}</td>
                   <td>{item.team}</td>
                   <td>{(teamsData?.find(team => team.name === item.team)?.countries || []).map(country => <ReactCountryFlag key={country} countryCode={country} aria-label={country} className='mr-2' />)}</td>
