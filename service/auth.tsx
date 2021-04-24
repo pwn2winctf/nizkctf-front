@@ -88,3 +88,7 @@ export const signUp = async ({ email, password, name, shareInfo }: { name: strin
   registerUser({ shareInfo })
   ])
 }
+
+export const sendPasswordResetEmail = async ({ email }: { email: string }) => {
+  await firebase.auth().sendPasswordResetEmail(email)
+}

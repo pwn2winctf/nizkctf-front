@@ -1,14 +1,17 @@
-import React, { FormEvent, useState } from 'react'
+import React, { FormEvent, useCallback, useState } from 'react'
 import { NextPage } from 'next'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 
-import swal from 'sweetalert2'
+import Swal from 'sweetalert2'
+import withReactContent from 'sweetalert2-react-content'
 import { Container, Row, Col, Form, Button } from 'react-bootstrap'
 
-import { login, useAuth } from '../service/auth';
+import { login, sendPasswordResetEmail, useAuth } from '../service/auth';
 import { resolveLanguage } from '../utils'
 import Navbar from '../components/Navbar'
+
+const swal = withReactContent(Swal)
 
 const SignUpPage: NextPage = () => {
   const router = useRouter()
@@ -18,6 +21,7 @@ const SignUpPage: NextPage = () => {
   const { user } = useAuth()
 
   const [values, setValues] = useState<{ email: string, password: string }>({ email: '', password: '' })
+  const [recoveryEmail, setRecoveryEmail] = useState<string>('')
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -48,6 +52,64 @@ const SignUpPage: NextPage = () => {
       )
     }
   }
+
+  const PopupContent = ({ onChange }) => {
+    const [email, setEmail] = useState('')
+    return (
+      <Form.Group>
+        <Form.Label>
+          {translation.email}
+        </Form.Label>
+        <Form.Control
+          type='text'
+          name='email'
+          value={email}
+          onChange={event => {
+            const value = event.target.value
+            setEmail(value)
+            onChange(value)
+          }} />
+      </Form.Group>
+    )
+  }
+
+  const showForgotPasswordPopup = useCallback(async () => {
+    const { isConfirmed } = await swal.fire({
+      title: translation.modal.forgotPassword,
+      showCloseButton: true,
+      confirmButtonText: translation.submit,
+      html: <PopupContent onChange={value => {
+        setRecoveryEmail(value)
+      }} />
+    })
+
+    if (isConfirmed) {
+      try {
+        swal.showLoading()
+
+        await sendPasswordResetEmail({ email: recoveryEmail })
+
+        setRecoveryEmail('')
+        swal.fire({
+          icon: 'success',
+          title: translation.modal.successfullyForgotPassword
+        })
+      } catch (err) {
+        console.error(err)
+        swal.fire({
+          icon: 'error',
+          title: translation.modal.errorTitle,
+          text: err.message,
+        })
+      } finally {
+        swal.hideLoading()
+
+      }
+    }
+
+  }, [translation])
+
+
   return (
     <>
       <Head>
@@ -70,7 +132,12 @@ const SignUpPage: NextPage = () => {
                 </Form.Label>
                 <Form.Control type='password' name='password' value={values.password} onChange={event => setValues({ ...values, [event.target.name]: event.target.value })} />
               </Form.Group>
-              <Button variant='primary' type='submit'>
+              <Form.Group>
+                <Form.Label onClick={() => showForgotPasswordPopup()} style={{ textDecoration: 'underline', cursor: 'pointer' }}>
+                  {translation.forgotPassword}
+                </Form.Label>
+              </Form.Group>
+              <Button variant='primary' type='submit' className='mt-2'>
                 {translation.login}
               </Button>
             </Form>
@@ -88,7 +155,12 @@ const translations = {
     email: 'E-mail',
     password: 'Password',
     login: 'Login',
+    forgotPassword: 'I forgot my password',
+    submit: 'Submit',
+    cancel: 'Cancel',
     modal: {
+      forgotPassword: 'Enter your email to retrieve your password',
+      successfullyForgotPassword: 'In minutes the email will arrive',
       successfullyTitle: 'Successfully logged in!',
       warningTitle: 'You are already logged in!',
       errorTitle: 'Error!',
@@ -99,7 +171,12 @@ const translations = {
     email: 'E-mail',
     password: 'Senha',
     login: 'Login',
+    forgotPassword: 'Esqueci minha senha',
+    submit: 'Enviar',
+    cancel: 'Cancelar',
     modal: {
+      forgotPassword: 'Informe seu e-mail para recuperar sua senha',
+      successfullyForgotPassword: 'Em minutos chegará o e-mail!',
       successfullyTitle: 'Logado com sucesso!',
       warningTitle: 'Você já está logado!',
       errorTitle: 'Ops, aconteceu um erro!',
