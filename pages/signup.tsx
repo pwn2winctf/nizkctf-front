@@ -3,12 +3,18 @@ import { NextPage } from 'next'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 
+import swal from 'sweetalert2'
+import { Container, Row, Col, Form, Button } from 'react-bootstrap'
+import dayjs from 'dayjs'
+import isSameOrBefore from 'dayjs/plugin/isSameOrBefore'
+
 import { signUp, useAuth } from '../service/auth'
 import { resolveLanguage } from '../utils'
 import Navbar from '../components/Navbar'
 
-import swal from 'sweetalert2'
-import { Container, Row, Col, Form, Button } from 'react-bootstrap'
+import { START_SUBSCRIPTION_DATE } from '../constants'
+
+dayjs.extend(isSameOrBefore)
 
 const SignUpPage: NextPage = () => {
   const router = useRouter()
@@ -145,7 +151,11 @@ const SignUpPage: NextPage = () => {
                   style={{ maxWidth: 400 }}
                   onChange={event => setValues({ ...values, shareInfo: !values.shareInfo })} />
               </Form.Group>
-              <Button variant='primary' type='submit' disabled={!isFilled}>
+              <Button
+                variant='primary'
+                type='submit'
+                disabled={!isFilled || dayjs().isBefore(dayjs(START_SUBSCRIPTION_DATE))}
+              >
                 {translation.signUp}
               </Button>
             </Form>
