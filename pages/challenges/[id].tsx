@@ -7,6 +7,8 @@ import { useRouter } from 'next/router'
 import ReactMarkdown from 'react-markdown'
 import { Button, Col, Container, Form, Row } from 'react-bootstrap'
 import swal from 'sweetalert2'
+import dayjs from 'dayjs'
+import isBetween from 'dayjs/plugin/isBetween'
 
 import { Challenge } from '../../interface'
 
@@ -16,6 +18,9 @@ import { getChallengeInfo, getChallengesId } from '../../lib/challenges'
 import claimFlag from '../../lib/claimFlag'
 import { getMeFromLocalStorage, resolveLanguage } from '../../utils'
 import { submitFlag } from '../../service/api'
+import { END_EVENT_DATE, START_EVENT_DATE } from '../../constants'
+
+dayjs.extend(isBetween)
 
 interface ChallengePageProps {
   challenge: Challenge
@@ -76,6 +81,9 @@ const ChallengePage: NextPage<ChallengePageProps> = ({ challenge }) => {
     }
   }
 
+  const isFilled = flag && flag.length > 0
+  const inRange = dayjs().isBetween(START_EVENT_DATE, END_EVENT_DATE)
+
   return (
     <>
       <Head>
@@ -101,7 +109,11 @@ const ChallengePage: NextPage<ChallengePageProps> = ({ challenge }) => {
               <Form.Group>
                 <Form.Control type='text' placeholder='CTF-BR{...}' value={flag} onChange={event => setFlag(event.target.value)} />
               </Form.Group>
-              <Button variant='primary' type='submit'>
+              <Button
+                variant='primary'
+                type='submit'
+                disabled={!isFilled || !inRange}
+              >
                 {translation.submit}
               </Button>
             </Form>
