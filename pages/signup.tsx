@@ -175,7 +175,7 @@ const translations = {
     password: 'Password',
     confirmPassword: 'Confirm password',
     name: 'Name',
-    shareInfo: 'I am interested in receiving job offers and invitations to private sponsor bug bounty programs.',
+    shareInfo: 'I am interested in receiving job offers and invitations to sponsor\'s private bug bounty programs.',
     oneAccountPerTeam: 'One account per team',
     modal: {
       infoTitle: 'This user will be used by your team to submit flags',
