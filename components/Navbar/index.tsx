@@ -18,7 +18,7 @@ const Navbar: React.FC = () => {
 
   return (
     <NavbarComponent collapseOnSelect expand='md' bg='dark' variant='dark' fixed='top'>
-      <NavbarComponent.Brand href='/'><img src='/images/blank_pwn2win_official.svg' height={40} alt='NIZKCTF' /></NavbarComponent.Brand>
+      <NavbarComponent.Brand href='/'><img src='/images/holding_flag.svg' height={40} alt='NIZKCTF' /></NavbarComponent.Brand>
       <NavbarComponent.Toggle aria-controls='responsive-navbar-nav' />
       <NavbarComponent.Collapse id='responsive-navbar-nav'>
         <Nav className='mr-auto'>
