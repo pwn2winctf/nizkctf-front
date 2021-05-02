@@ -1,7 +1,7 @@
 const translations = {
   'en-US': {
     challenges: 'Challenges',
-    ranking: 'Ranking',
+    ranking: 'Scoreboard',
     rules: 'Rules',
     faq: 'FAQ',
     signUp: 'Sign up',
@@ -11,7 +11,7 @@ const translations = {
   },
   'pt-BR': {
     challenges: 'Desafios',
-    ranking: 'Ranking',
+    ranking: 'Placar',
     rules: 'Regras',
     faq: 'FAQ',
     signUp: 'Registrar-se',

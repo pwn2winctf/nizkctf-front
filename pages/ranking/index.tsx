@@ -254,14 +254,14 @@ const resolveAxisAndTopSolves = (standings: Standing[]) => {
 
 const translations = {
   'en-US': {
-    title: 'Ranking - NIZKCTF',
+    title: 'Scoreboard - NIZKCTF',
     position: 'Position',
     team: 'Team',
     country: 'Countries',
     score: 'Score'
   },
   'pt-BR': {
-    title: 'Ranking - NIZKCTF',
+    title: 'Placar - NIZKCTF',
     position: 'Posição',
     team: 'Time',
     country: 'Países',
