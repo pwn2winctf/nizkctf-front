@@ -16,7 +16,7 @@ export const VERSION = version
 export const API_BASE_URL = APP_ENV === 'production' ? 'https://api.pwn2.win' : 'https://nizkctf.herokuapp.com'
 export const CHALLENGES_BASE_URL = APP_ENV === 'production' ? 'https://ctf-br.github.io/ranking/challenges' : 'https://ctf-br.github.io/ranking/challenges'
 
-export const START_SUBSCRIPTION_DATE = dayjs('02-05-2021 -03:00', 'DD-MM-YYYY Z').toDate()
+export const START_SUBSCRIPTION_DATE = dayjs('02-05-2021 08:00 -03:00', 'DD-MM-YYYY HH:mm Z').toDate()
 export const START_EVENT_DATE = dayjs('28-05-2021 13:37 -03:00', 'DD-MM-YYYY HH:mm Z').toDate()
 export const END_EVENT_DATE = dayjs('30-05-2021 13:37 -03:00', 'DD-MM-YYYY HH:mm Z').toDate()
 
