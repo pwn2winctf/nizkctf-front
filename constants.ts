@@ -1,9 +1,17 @@
 import dayjs from 'dayjs'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
 
+const { name, version } = require('./package.json')
+
 dayjs.extend(customParseFormat)
 
 export const APP_ENV = process.env.APP_ENV === 'production' ? 'production' : 'development'
+export const SENTRY_DSN = process.env.SENTRY_DSN
+export const SENTRY_PROJECT = process.env.SENTRY_PROJECT
+export const SENTRY_ORG = process.env.SENTRY_ORG
+export const SENTRY_AUTH_TOKEN = process.env.SENTRY_AUTH_TOKEN
+export const NAME = name
+export const VERSION = version
 
 export const API_BASE_URL = APP_ENV === 'production' ? 'https://api.pwn2.win' : 'https://nizkctf.herokuapp.com'
 export const CHALLENGES_BASE_URL = APP_ENV === 'production' ? 'https://ctf-br.github.io/ranking/challenges' : 'https://ctf-br.github.io/ranking/challenges'

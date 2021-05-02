@@ -1,11 +1,12 @@
-import React, { FormEvent, useEffect, useState } from 'react'
+import React, { FormEvent, useContext, useEffect, useState } from 'react'
 import { NextPage } from 'next'
 import dynamic from 'next/dynamic'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import countriesI18 from 'i18n-iso-countries'
+import * as Sentry from '@sentry/browser'
 
-import { useAuth } from '../service/auth'
+import { reloadInfo, AuthContext } from '../service/auth'
 import { resolveLanguage } from '../utils'
 import Navbar from '../components/Navbar'
 
@@ -37,10 +38,10 @@ const SignUpPage: NextPage = () => {
   const resolvedLocaleToI18n = locale.split('-')[0]
   const countries = Object.entries(countriesI18.getNames(resolvedLocaleToI18n)).map(([value, name]) => ({ value: value.toLocaleLowerCase(), name })).filter(item => validCountries.includes(item.value))
 
-  const { user, isLoading } = useAuth()
+  const { user, isLoading } = useContext(AuthContext)
 
   const [me, setMe] = useState<{
-    uuid: string;
+    uid: string;
     team?: Pick<Team, 'name' | 'countries'>
   }>()
   const [values, setValues] = useState<{ countries: { value: string, name: string }[], name: string }>({ countries: [], name: '' })
@@ -58,6 +59,7 @@ const SignUpPage: NextPage = () => {
         setMe(data)
       } catch (err) {
         console.error(err)
+        Sentry.captureException(err)
 
         if (cancelToken.isCancelled) {
           return
@@ -116,6 +118,7 @@ const SignUpPage: NextPage = () => {
       )
     } catch (err) {
       console.error(err)
+      Sentry.captureException(err)
 
       const message = (err.data?.errors && err.data.errors[0].message) || err.message
       swal.fire(
@@ -180,9 +183,9 @@ const SignUpPage: NextPage = () => {
             <Alert variant='warning' className='d-flex flex-row align-items-center'>
               <span className='flex-grow-1'>{translation.verifyEmail}</span>
               <div className=''>
-              <Button className='ml-auto' variant='primary' onClick={() => router.reload()}>
-                {translation.alreadyChecked}
-              </Button>
+                <Button className='ml-auto' variant='primary' onClick={() => reloadInfo({ user }).then(() => router.reload())}>
+                  {translation.alreadyChecked}
+                </Button>
               </div>
             </Alert>
           </Col>
@@ -211,31 +214,31 @@ const SignUpPage: NextPage = () => {
                   <Card.Text>
                     <span className='font-weight-bold'>{translation.countries}: </span>{me.team.countries.map(item => <ReactCountryFlag key={item} countryCode={item} aria-label={item} />)}
                   </Card.Text></> : <>
-                    <Form className='w-100 d-flex flex-column justify-content-center align-items-center' onSubmit={handleSubmit}>
-                      <Form.Group className='w-100'>
-                        <Form.Label>
-                          {translation.name}
-                        </Form.Label>
-                        <Form.Control type='text' name='name' value={values.name} onChange={event => setValues({ ...values, [event.target.name]: event.target.value })} />
-                      </Form.Group>
-                      <Form.Group className='w-100'>
-                        <Form.Label>
-                          {translation.countries}
-                        </Form.Label>
-                        <Multiselect
-                          options={countries}
-                          placeholder=''
-                          selectedValues={values.countries}
-                          onSelect={(selectedItems: { value: string, name: string }[]) => setValues({ ...values, countries: selectedItems })}
-                          onRemove={(selectedItems: { value: string, name: string }[]) => setValues({ ...values, countries: selectedItems })}
-                          displayValue='name'
-                        />
-                      </Form.Group>
-                      <Button variant='primary' type='submit' disabled={values.name.length === 0 || !user.emailVerified}>
-                        {translation.submit}
-                      </Button>
-                    </Form>
-                  </>}
+                  <Form className='w-100 d-flex flex-column justify-content-center align-items-center' onSubmit={handleSubmit}>
+                    <Form.Group className='w-100'>
+                      <Form.Label>
+                        {translation.name}
+                      </Form.Label>
+                      <Form.Control type='text' name='name' value={values.name} onChange={event => setValues({ ...values, [event.target.name]: event.target.value })} />
+                    </Form.Group>
+                    <Form.Group className='w-100'>
+                      <Form.Label>
+                        {translation.countries}
+                      </Form.Label>
+                      <Multiselect
+                        options={countries}
+                        placeholder=''
+                        selectedValues={values.countries}
+                        onSelect={(selectedItems: { value: string, name: string }[]) => setValues({ ...values, countries: selectedItems })}
+                        onRemove={(selectedItems: { value: string, name: string }[]) => setValues({ ...values, countries: selectedItems })}
+                        displayValue='name'
+                      />
+                    </Form.Group>
+                    <Button variant='primary' type='submit' disabled={values.name.length === 0 || !user.emailVerified}>
+                      {translation.submit}
+                    </Button>
+                  </Form>
+                </>}
               </Card.Body>
             </Card>
           </Col>

@@ -2,6 +2,7 @@ import React, { FormEvent, useCallback, useState } from 'react'
 import { NextPage } from 'next'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
+import * as Sentry from '@sentry/browser'
 
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
@@ -96,6 +97,7 @@ const SignUpPage: NextPage = () => {
         })
       } catch (err) {
         console.error(err)
+        Sentry.captureException(err)
         swal.fire({
           icon: 'error',
           title: translation.modal.errorTitle,

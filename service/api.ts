@@ -72,11 +72,11 @@ export const listTeams = async (): Promise<Omit<Team, 'members'>[]> => {
   return teams
 }
 
-export const getMe = async ({ cancelToken }: { cancelToken?: CancelToken }): Promise<{ uuid: string, team?: Omit<Team, 'id' | 'members'> }> => {
+export const getMe = async ({ cancelToken }: { cancelToken?: CancelToken }): Promise<{ uid: string, team?: Omit<Team, 'id' | 'members'> }> => {
   const token = getTokenFromLocalStorage()
   const url = new URL('/users/me', API_BASE_URL).toString()
 
-  const me: { uuid: string, team?: Omit<Team, 'id' | 'members'> } = await myFetch(url, {
+  const me: { uid: string, team?: Omit<Team, 'id' | 'members'> } = await myFetch(url, {
     headers: { Authorization: token },
     signal: cancelToken?.signal
   }).then(response => response.data)

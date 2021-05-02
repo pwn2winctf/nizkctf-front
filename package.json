@@ -8,6 +8,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "@sentry/browser": "^6.3.5",
     "bootstrap": "^4.6.0",
     "chart.js": "^2.9.4",
     "date-fns": "^2.11.1",

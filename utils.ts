@@ -96,14 +96,14 @@ export const IS_SERVER = typeof window === 'undefined'
 export const getMeFromLocalStorage = () => {
   if (IS_SERVER) {
     return {
-      uuid: undefined,
+      uid: undefined,
       team: undefined
     }
   }
 
   const data = localStorage.getItem('me')
 
-  const jsonData: { uuid: string, team?: Team } = JSON.parse(data)
+  const jsonData: { uid: string, team?: Team } = JSON.parse(data)
 
   return jsonData
 }

@@ -7,6 +7,7 @@
       "WebWorker",
       "esnext"
     ],
+    "sourceMap": true,
     "allowJs": true,
     "skipLibCheck": true,
     "strict": false,

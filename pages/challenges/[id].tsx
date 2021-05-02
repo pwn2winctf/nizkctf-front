@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { GetStaticPaths, GetStaticProps, NextPage } from 'next'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
+import * as Sentry from '@sentry/browser'
 
 
 import ReactMarkdown from 'react-markdown'
@@ -70,6 +71,9 @@ const ChallengePage: NextPage<ChallengePageProps> = ({ challenge }) => {
       )
     } catch (err) {
       console.error(err)
+      if (!err.message.includes('This is not the correct flag')) {
+        Sentry.captureException(err)
+      }
 
       const message = (err.data?.errors && err.data.errors[0].message) || err.message
 

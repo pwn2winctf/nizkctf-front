@@ -1,5 +1,6 @@
 import React, { useState, useEffect, createContext, useContext } from 'react'
 import { useRouter } from 'next/router'
+import * as Sentry from '@sentry/browser'
 
 import firebaseClient from './firebase'
 import firebase from 'firebase/app'
@@ -10,7 +11,7 @@ import swal from 'sweetalert2'
 import { resolveLanguage } from '../utils'
 import { registerUser } from './api'
 
-const AuthContext = createContext<{ user?: firebase.User, isLoading?: boolean }>({})
+export const AuthContext = createContext<{ user?: firebase.User, isLoading?: boolean }>({})
 
 export const AuthProvider = ({ children }) => {
   firebaseClient()
@@ -37,6 +38,15 @@ export const AuthProvider = ({ children }) => {
     }, error => {
       swal.fire(translation.errorTitle, `${error.message}. ${translation.errorText}`, 'error')
       console.error(error)
+      Sentry.captureException(error)
+    })
+  }, [])
+
+  useEffect(() => {
+    return firebase.auth().onAuthStateChanged(async (newUserState) => {
+      if (newUserState) {
+        setUser(newUserState)
+      }
     })
   }, [])
 
@@ -91,4 +101,8 @@ export const signUp = async ({ email, password, name, shareInfo }: { name: strin
 
 export const sendPasswordResetEmail = async ({ email }: { email: string }) => {
   await firebase.auth().sendPasswordResetEmail(email)
+}
+
+export const reloadInfo = async ({ user }: { user: firebase.User }) => {
+  await user.reload()
 }
