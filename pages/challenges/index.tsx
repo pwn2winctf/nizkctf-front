@@ -79,7 +79,7 @@ const ChallengesPage: NextPage<ChallengesPageProps> = (props) => {
                     <Card.Title>{metadata.title}</Card.Title>
                     <Card.Text>
                       <p>Solves: {solves[metadata.id] || 0}</p>
-                      <p>Score: {computeScore(solves[metadata.id] || 0)}</p>
+                      <p>Score: {computeScore((solves[metadata.id] || 0) + 1)}</p>
 
                     </Card.Text>
                   </Card.Body>
