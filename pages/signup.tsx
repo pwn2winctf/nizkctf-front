@@ -27,13 +27,11 @@ const SignUpPage: NextPage = () => {
     email: string,
     password: string,
     confirmPassword: string,
-    name: string,
     shareInfo: boolean
   }>({
     email: '',
     password: '',
     confirmPassword: '',
-    name: '',
     shareInfo: false
   })
 
@@ -79,7 +77,7 @@ const SignUpPage: NextPage = () => {
     }
   }
 
-  const isFilled = values.name.length > 0 && values.email.length > 0 && values.password.length > 0 && values.password === values.confirmPassword
+  const isFilled = values.email.length > 0 && values.password.length > 0 && values.password === values.confirmPassword
 
   return (
     <>
@@ -96,17 +94,6 @@ const SignUpPage: NextPage = () => {
         <Row>
           <Col sm='12'>
             <Form className='d-flex flex-column justify-content-center align-items-center' onSubmit={handleSubmit}>
-              <Form.Group>
-                <Form.Label>
-                  {translation.name}
-                </Form.Label>
-                <Form.Control
-                  type='text'
-                  name='name'
-                  value={values.name}
-                  required
-                  onChange={event => setValues({ ...values, [event.target.name]: event.target.value })} />
-              </Form.Group>
               <Form.Group>
                 <Form.Label>
                   {translation.email}

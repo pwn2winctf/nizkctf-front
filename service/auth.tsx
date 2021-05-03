@@ -93,8 +93,7 @@ export const signUp = async ({ email, password, name, shareInfo }: { name: strin
   const token = await userCredentials.user.getIdToken()
   localStorage.setItem('token', token)
 
-  await Promise.all([userCredentials.user.updateProfile({ displayName: name }),
-  userCredentials.user.sendEmailVerification(),
+  await Promise.all([userCredentials.user.sendEmailVerification(),
   registerUser({ shareInfo })
   ])
 }

@@ -196,7 +196,6 @@ const SignUpPage: NextPage = () => {
             <Card>
               <Card.Header as='h5'>{translation.userAccount}</Card.Header>
               <Card.Body>
-                <Card.Title>{user.displayName}</Card.Title>
                 <Card.Text>
                   E-mail: {user.email}
                 </Card.Text>
