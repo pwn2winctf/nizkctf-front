@@ -10,5 +10,5 @@ export const getNews = async () => {
 
 export const fetchNews = (url: string) => fetch(url)
   .then(response => response.json())
-  .then(list => list.map(item => ({ msg: item.msg, datetime: item.time })))
+  .then(list => list.map(item => ({ msg: item.msg, datetime: item.time })).sort((a,b) => b.datetime - a.datetime ))
 
