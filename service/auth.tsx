@@ -85,7 +85,7 @@ export const login = async ({ email, password }: { email: string, password: stri
   }
 }
 
-export const signUp = async ({ email, password, name, shareInfo }: { name: string, email: string, password: string, shareInfo: boolean }) => {
+export const signUp = async ({ email, password, shareInfo }: { email: string, password: string, shareInfo: boolean }) => {
   const userCredentials = await firebase.auth().createUserWithEmailAndPassword(email, password)
 
   const token = await userCredentials.user.getIdToken()
