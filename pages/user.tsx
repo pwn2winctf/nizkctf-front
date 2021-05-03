@@ -6,7 +6,7 @@ import { useRouter } from 'next/router'
 import countriesI18 from 'i18n-iso-countries'
 import * as Sentry from '@sentry/browser'
 
-import { reloadInfo, AuthContext } from '../service/auth'
+import { reloadInfo, AuthContext, resendEmailVerification } from '../service/auth'
 import { resolveLanguage } from '../utils'
 import Navbar from '../components/Navbar'
 
@@ -129,6 +129,33 @@ const SignUpPage: NextPage = () => {
     }
   }
 
+  const handleResendVerification = async () => {
+    try {
+      swal.fire({
+        title: translation.sendingEmail,
+        icon: 'info',
+        didOpen: () => {
+          swal.showLoading()
+        }
+      })
+      await resendEmailVerification({ user })
+      swal.fire(translation.emailSent, '', 'success')
+
+    } catch (err) {
+      console.error(err)
+      Sentry.captureException(err)
+      swal.fire({
+        icon: 'error',
+        title: translation.modal.errorTitle,
+        text: err.message,
+      })
+    } finally {
+      swal.hideLoading()
+    }
+
+  }
+
+
   const beforeSubmit = async () => {
     return swal.fire({
       title: translation.reviewData,
@@ -168,9 +195,6 @@ const SignUpPage: NextPage = () => {
     )
   }
 
-
-
-
   return (
     <>
       <Head>
@@ -185,6 +209,19 @@ const SignUpPage: NextPage = () => {
               <div className=''>
                 <Button className='ml-auto' variant='primary' onClick={() => reloadInfo({ user }).then(() => router.reload())}>
                   {translation.alreadyChecked}
+                </Button>
+              </div>
+            </Alert>
+          </Col>
+        </Row>
+        }
+        {user && !user.emailVerified && <Row>
+          <Col sm='12'>
+            <Alert variant='warning' className='d-flex flex-row align-items-center'>
+              <span className='flex-grow-1'>{translation.notReceiveAConfirmationEmail}</span>
+              <div className=''>
+                <Button className='ml-auto' variant='primary' onClick={() => handleResendVerification()}>
+                  {translation.resendVerification}
                 </Button>
               </div>
             </Alert>
@@ -266,7 +303,11 @@ const translations = {
     reviewData: 'Review the data',
     verifyEmail: 'Check your email to confirm your account and be able to register your team!',
     alreadyChecked: 'I already checked',
-    userAccount: 'User account'
+    notReceiveAConfirmationEmail: 'If you have not received a confirmation email yet, click the button to resend',
+    resendVerification: 'Resend verification',
+    userAccount: 'User account',
+    sendingEmail: 'Sending email',
+    emailSent: 'Email sent',
   },
   'pt-BR': {
     loading: 'Carregando',
@@ -284,8 +325,12 @@ const translations = {
     },
     reviewData: 'Revise os dados',
     verifyEmail: 'Verifique seu e-mail para confirmar sua conta e poder cadastrar seu time!',
+    notReceiveAConfirmationEmail: 'Se ainda não recebeu e-mail de confirmação clique no botão para reenviar',
     alreadyChecked: 'Já verifiquei',
-    userAccount: 'Conta do usuário'
+    resendVerification: 'Reenviar verificação',
+    userAccount: 'Conta do usuário',
+    sendingEmail: 'Enviando e-mail',
+    emailSent: 'E-mail enviado',
   },
 }
 
