@@ -104,5 +104,5 @@ export const sendPasswordResetEmail = async ({ email }: { email: string }) => {
 }
 
 export const reloadInfo = async ({ user }: { user: firebase.User }) => {
-  await user.reload()
+  await user.getIdToken(true)
 }
