@@ -81,9 +81,7 @@ export const login = async ({ email, password }: { email: string, password: stri
   const userCredentials = await firebase.auth().signInWithEmailAndPassword(email, password)
 
   if (!userCredentials.user.emailVerified) {
-    await userCredentials.user.sendEmailVerification()
-    await logout()
-    throw new Error('Check your email to confirm your account')
+    await resendEmailVerification({ user: userCredentials.user })
   }
 }
 
@@ -104,4 +102,8 @@ export const sendPasswordResetEmail = async ({ email }: { email: string }) => {
 
 export const reloadInfo = async ({ user }: { user: firebase.User }) => {
   await user.getIdToken(true)
+}
+
+export const resendEmailVerification = async ({ user }: { user: firebase.User }) => {
+  await user.sendEmailVerification()
 }
