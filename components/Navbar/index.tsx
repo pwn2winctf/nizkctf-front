@@ -2,15 +2,18 @@ import React from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 
-import { Nav, Navbar as NavbarComponent } from 'react-bootstrap'
+import { Dropdown, Nav, Navbar as NavbarComponent } from 'react-bootstrap'
+import ReactCountryFlag from 'react-country-flag'
+
 import { logout, useAuth } from '../../service/auth'
-import { resolveLanguage } from '../../utils'
+import { resolveCountryFlag, resolveLanguage, supportedCountryFlags } from '../../utils'
 
 import translations from './translations'
 
 const Navbar: React.FC = () => {
   const router = useRouter()
   const locale = resolveLanguage(router.locale)
+  const countryFlag = resolveCountryFlag(locale)
 
   const { user } = useAuth()
 
@@ -37,6 +40,21 @@ const Navbar: React.FC = () => {
         </Nav>
 
         <Nav className='ml-auto'>
+          <Dropdown>
+            <Dropdown.Toggle variant=''>
+              <ReactCountryFlag countryCode={countryFlag} aria-label={countryFlag} />
+            </Dropdown.Toggle>
+
+            <Dropdown.Menu>
+              {
+                Object.entries(supportedCountryFlags).map(([language,flag]) =>
+                  <Dropdown.Item href={`/${language}`} key={flag}>
+                    <ReactCountryFlag countryCode={flag} aria-label={flag} />
+                  </Dropdown.Item>
+                )
+              }
+            </Dropdown.Menu>
+          </Dropdown>
           {user ? <>
             <Link href='/user' passHref locale={locale} prefetch={false}>
               <Nav.Link>{translation.profile}</Nav.Link>

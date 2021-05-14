@@ -3,12 +3,24 @@ import { Challenge } from './interface'
 import { Team } from './service/api'
 
 type languages = 'en-US' | 'pt-BR'
+type countryFlag = 'us' | 'br'
+
+export const supportedCountryFlags: { [lang: string]: string } = {
+  'en-US': 'us',
+  'pt-BR': 'br'
+}
 
 export const resolveLanguage = (language: string): languages => {
   const defaultLanguage = 'en-US'
-  const supportedLanguages = ['en-US', 'pt-BR']
+  const supportedLanguages = [defaultLanguage, 'pt-BR']
 
   return supportedLanguages.includes(language) ? language as languages : defaultLanguage
+}
+
+export const resolveCountryFlag = (language: string): countryFlag => {
+  const defaultFlag = 'us'
+
+  return Object.keys(supportedCountryFlags).includes(language) ? supportedCountryFlags[language] as countryFlag : defaultFlag
 }
 
 export const formatDateByLanguage = (timestamp: number, language: string) => {
