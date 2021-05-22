@@ -4,6 +4,8 @@ import { useRouter } from 'next/router'
 
 import { Dropdown, Nav, Navbar as NavbarComponent } from 'react-bootstrap'
 import ReactCountryFlag from 'react-country-flag'
+import { FaDiscord } from 'react-icons/fa'
+
 
 import { logout, useAuth } from '../../service/auth'
 import { resolveCountryFlag, resolveLanguage, supportedCountryFlags } from '../../utils'
@@ -37,24 +39,27 @@ const Navbar: React.FC = () => {
           <Link href='/faq' passHref locale={locale} prefetch={false}>
             <Nav.Link>{translation.faq}</Nav.Link>
           </Link>
+          <Nav.Link href='https://discord.gg/yku9WhKgjj'><FaDiscord title='Discord' /></Nav.Link>
         </Nav>
 
         <Nav className='ml-auto'>
-          <Dropdown>
-            <Dropdown.Toggle variant=''>
-              <ReactCountryFlag countryCode={countryFlag} aria-label={countryFlag} />
-            </Dropdown.Toggle>
+          <Nav.Item>
+            <Dropdown>
+              <Dropdown.Toggle variant=''>
+                <ReactCountryFlag countryCode={countryFlag} aria-label={countryFlag} />
+              </Dropdown.Toggle>
 
-            <Dropdown.Menu>
-              {
-                Object.entries(supportedCountryFlags).map(([language,flag]) =>
-                  <Dropdown.Item href={`/${language}`} key={flag}>
-                    <ReactCountryFlag countryCode={flag} aria-label={flag} />
-                  </Dropdown.Item>
-                )
-              }
-            </Dropdown.Menu>
-          </Dropdown>
+              <Dropdown.Menu>
+                {
+                  Object.entries(supportedCountryFlags).map(([language, flag]) =>
+                    <Dropdown.Item href={`/${language}`} key={flag}>
+                      <ReactCountryFlag countryCode={flag} aria-label={flag} /> <span className='ml-2'>{language}</span>
+                    </Dropdown.Item>
+                  )
+                }
+              </Dropdown.Menu>
+            </Dropdown>
+          </Nav.Item>
           {user ? <>
             <Link href='/user' passHref locale={locale} prefetch={false}>
               <Nav.Link>{translation.profile}</Nav.Link>
