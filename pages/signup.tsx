@@ -165,7 +165,7 @@ const translations = {
     shareInfo: 'I am interested in receiving job offers and invitations to sponsor\'s private bug bounty programs.',
     oneAccountPerTeam: 'One account per team',
     modal: {
-      infoTitle: 'This user will be used by your team to submit flags',
+      infoTitle: 'All of your team will use this same user to submit flags',
       successfullyTitle: 'Check your email to complete your registration!',
       warningTitle: 'You are already logged in!',
       errorTitle: 'Error!',
@@ -183,7 +183,7 @@ const translations = {
     shareInfo: 'Tenho interesse em receber propostas de emprego e convites para programas de bug bounty privados dos patrocinadores.',
     oneAccountPerTeam: 'Uma conta por time',
     modal: {
-      infoTitle: 'Esse usuário será usado pelo seu time para enviar flags',
+      infoTitle: 'Todos do seu time usarão esse mesmo usuário para enviar flags',
       successfullyTitle: 'Verifique seu e-mail para completar seu cadastro!',
       warningTitle: 'Você já está logado!',
       errorTitle: 'Ops, aconteceu um erro!',
