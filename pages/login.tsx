@@ -1,4 +1,4 @@
-import React, { FormEvent, useCallback, useState } from 'react'
+import React, { FormEvent, useCallback, useEffect, useState } from 'react'
 import { NextPage } from 'next'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
@@ -22,7 +22,6 @@ const SignUpPage: NextPage = () => {
   const { user } = useAuth()
 
   const [values, setValues] = useState<{ email: string, password: string }>({ email: '', password: '' })
-  const [recoveryEmail, setRecoveryEmail] = useState<string>('')
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -35,7 +34,6 @@ const SignUpPage: NextPage = () => {
       )
       return
     }
-
 
     try {
       await login(values)
@@ -54,43 +52,18 @@ const SignUpPage: NextPage = () => {
     }
   }
 
-  const PopupContent = ({ onChange }) => {
-    const [email, setEmail] = useState('')
-    return (
-      <Form.Group>
-        <Form.Label>
-          {translation.email}
-        </Form.Label>
-        <Form.Control
-          type='text'
-          name='email'
-          value={email}
-          onChange={event => {
-            const value = event.target.value
-            setEmail(value)
-            onChange(value)
-          }} />
-      </Form.Group>
-    )
-  }
-
   const showForgotPasswordPopup = useCallback(async () => {
-    const { isConfirmed } = await swal.fire({
+    const { isConfirmed, value: email } = await swal.fire({
       title: translation.modal.forgotPassword,
       showCloseButton: true,
       confirmButtonText: translation.submit,
-      html: <PopupContent onChange={value => {
-        setRecoveryEmail(value)
-      }} />
+      input: 'email'
     })
 
     if (isConfirmed) {
       try {
         swal.showLoading()
-
-        await sendPasswordResetEmail({ email: recoveryEmail })
-
-        setRecoveryEmail('')
+        await sendPasswordResetEmail({ email })
         swal.fire({
           icon: 'success',
           title: translation.modal.successfullyForgotPassword
