@@ -74,7 +74,7 @@ const ChallengesPage: NextPage<ChallengesPageProps> = (props) => {
       <Container className='mt-4' fluid>
         <Row>
           {filteredList.map(({ metadata }) => {
-            const isSolved = !!standings?.find(item => me.team && item.team === me.team.name && item.challenge === metadata.id)
+            const isSolved = !!standings?.find(item => me?.team && item?.team === me?.team?.name && item?.challenge === metadata?.id)
 
             return (
               <Col sm={6} md={4} key={metadata.id}>
