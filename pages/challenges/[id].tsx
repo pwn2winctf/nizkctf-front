@@ -38,17 +38,25 @@ const ChallengePage: NextPage<ChallengePageProps> = ({ challenge }) => {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
-    if (!me?.team) {
-      const { isConfirmed } = await swal.fire({
+    if (!me) {
+      await swal.fire({
         title: translation.modal.warningLogin,
         confirmButtonText: translation.signIn,
         showCloseButton: true
       })
 
-      if (isConfirmed) {
-        router.push('/login', null, { locale })
-      }
+      router.push('/login', null, { locale })
+      return
 
+    } else if (!me.team) {
+      await swal.fire({
+        title: translation.modal.warningTeam,
+        text: translation.modal.warningTeamText,
+        confirmButtonText: translation.registerTeam,
+        showCloseButton: true
+      })
+
+      router.push('/user', null, { locale })
       return
     }
 
@@ -132,8 +140,11 @@ const translations = {
   'en-US': {
     submit: 'Submit',
     signIn: 'Sign in',
+    registerTeam: 'Register team',
     modal: {
       warningLogin: 'You must be logged in',
+      warningTeam: 'You haven\'t registered your team yet!',
+      warningTeamText: 'Please, complete the registration',
       validatingFlag: 'Validating flag',
       successfullyTitle: 'Flag successfully submitted!',
       errorTitle: 'Error!',
@@ -142,8 +153,11 @@ const translations = {
   'pt-BR': {
     submit: 'Enviar',
     signIn: 'Entrar',
+    registerTeam: 'Registrar time',
     modal: {
       warningLogin: 'Você precisa estar logado',
+      warningTeam: 'Você ainda não cadastrou seu time!',
+      warningTeamText: 'Por favor, complete o registro do seu time',
       validatingFlag: 'Validando flag',
       successfullyTitle: 'Flag submetida com sucesso!',
       errorTitle: 'Ops, aconteceu um erro!',
