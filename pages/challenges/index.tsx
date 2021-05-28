@@ -11,7 +11,7 @@ import { Challenge } from '../../interface'
 
 import { getChallenges } from '../../lib/challenges'
 import { fetchSimpleSolvesList, countSolves, getSimpleSolvesList, SOLVES_URL } from '../../lib/solves'
-import { computeScore, resolveLanguage, resolveListWithoutDuplicatedTags } from '../../utils'
+import { computeScore, getMeFromLocalStorage, resolveLanguage, resolveListWithoutDuplicatedTags } from '../../utils'
 
 import Navbar from '../../components/Navbar'
 
@@ -38,6 +38,8 @@ const ChallengesPage: NextPage<ChallengesPageProps> = (props) => {
 
   const [filteredList, setFilteredList] = useState(props.allPostsData)
   const [selectedTag, setSeletedTag] = useState('all')
+
+  const me = getMeFromLocalStorage()
 
   useEffect(() => {
     if (selectedTag === 'all') {
@@ -71,27 +73,35 @@ const ChallengesPage: NextPage<ChallengesPageProps> = (props) => {
       </Container>
       <Container className='mt-4' fluid>
         <Row>
-          {filteredList.map(({ metadata }) => (
-            <Col sm={6} md={4} key={metadata.id}>
-              <Link href={`/challenges/${metadata.id}`} locale={router.locale} prefetch={false}>
-                <Card style={{ cursor: 'pointer' }} className='mb-4'>
-                  <Card.Body>
-                    <Card.Title>{metadata.title}</Card.Title>
-                    <Card.Text>
-                      <p>Solves: {solves[metadata.id] || 0}</p>
-                      <p>Score: {computeScore((solves[metadata.id] || 0) + 1)}</p>
+          {filteredList.map(({ metadata }) => {
+            const isSolved = !!standings?.find(item => me.team && item.team === me.team.name && item.challenge === metadata.id)
 
-                    </Card.Text>
-                  </Card.Body>
-                  <Card.Footer>
-                    {metadata.tags.map((tag) => (
-                      <Badge variant='primary' className='mr-2' key={tag}>{tag}</Badge>
-                    ))}
-                  </Card.Footer>
-                </Card>
-              </Link>
-            </Col>
-          ))}
+            return (
+              <Col sm={6} md={4} key={metadata.id}>
+                <Link href={`/challenges/${metadata.id}`} locale={router.locale} prefetch={false}>
+                  <Card
+                    style={{ cursor: 'pointer' }} className='mb-4'
+                    bg={isSolved ? 'success' : 'light'}
+                    text={isSolved ? 'white' : 'dark'}
+                  >
+                    <Card.Body>
+                      <Card.Title>{metadata.title}</Card.Title>
+                      <Card.Text>
+                        <p>Solves: {solves[metadata.id] || 0}</p>
+                        <p>Score: {computeScore((solves[metadata.id] || 0) + 1)}</p>
+
+                      </Card.Text>
+                    </Card.Body>
+                    <Card.Footer>
+                      {metadata.tags.map((tag) => (
+                        <Badge variant={isSolved ? 'light' : 'primary'} className='mr-2' key={tag}>{tag}</Badge>
+                      ))}
+                    </Card.Footer>
+                  </Card>
+                </Link>
+              </Col>
+            )
+          })}
         </Row>
       </Container>
     </>
