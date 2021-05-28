@@ -24,19 +24,6 @@ interface RankingPageProps {
   timeAxis: number[]
 }
 
-const data = {
-  labels: ['1', '2', '3', '4', '5', '6'],
-  datasets: [
-    {
-      label: '# of Votes',
-      data: [12, 19, 3, 5, 2, 3],
-      fill: false,
-      backgroundColor: 'rgb(255, 99, 132)',
-      borderColor: 'rgba(255, 99, 132, 0.2)',
-    },
-  ],
-}
-
 const options = {
   maintainAspectRatio: false,
   animation: false,
@@ -135,7 +122,7 @@ const RankingPage: NextPage<RankingPageProps> = (props) => {
       <Container style={{ marginTop: 55 }} className='pt-3'>
         <Row>
           <Col sm='12' style={{ minHeight: '70vh', maxHeight: '100vh' }}>
-            <Line data={{ labels: timeAxisDate, datasets }} options={options} />
+            <Line redraw={true} data={{ labels: timeAxisDate, datasets }} options={options} />
           </Col>
         </Row>
         <Row className='mt-4'>
