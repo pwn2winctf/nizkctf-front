@@ -153,7 +153,11 @@ const RankingPage: NextPage<RankingPageProps> = (props) => {
           </Col>
         </Row>
       </Container>
-      <Modal show={popupContent.visible} onHide={() => setPopupContent({ visible: false, content: undefined })}>
+      <Modal
+        size='lg'
+        show={popupContent.visible}
+        onHide={() => setPopupContent({ visible: false, content: undefined })}
+      >
         <Modal.Header closeButton>
           <Modal.Title> {popupContent.content?.pos} - {popupContent.content?.team}</Modal.Title>
         </Modal.Header>
