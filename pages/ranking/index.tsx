@@ -1,8 +1,9 @@
 import { GetStaticProps, NextPage } from 'next'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
+import { useState } from 'react'
 
-import { Col, Container, Row, Table } from 'react-bootstrap'
+import { Button, Col, Container, Modal, Row, Table } from 'react-bootstrap'
 import { Line } from 'react-chartjs-2'
 import useSWR from 'swr'
 import ReactCountryFlag from 'react-country-flag'
@@ -13,7 +14,7 @@ import { Standing } from '../../interface'
 
 import { fetchStandingsList, getStandingsList, SOLVES_URL } from '../../lib/solves'
 import { fetchTeams, TEAMS_URL } from '../../lib/teams'
-import { computeScore, fromUnixToDate, colors, resolveLanguage } from '../../utils'
+import { computeScore, fromUnixToDate, colors, resolveLanguage, formatDateByLanguage } from '../../utils'
 
 interface RankingPageProps {
   standings: Standing[],
@@ -92,6 +93,8 @@ const RankingPage: NextPage<RankingPageProps> = (props) => {
     refreshInterval: 1000 * 15 // 15s
   })
 
+  const [popupContent, setPopupContent] = useState<{ visible: boolean, content?: Standing }>({ visible: false })
+
   const {
     timeAxis,
     scoreAxis,
@@ -137,7 +140,9 @@ const RankingPage: NextPage<RankingPageProps> = (props) => {
                 </tr>
               </thead>
               <tbody>
-                {standings?.filter((item, index) => standings.findIndex(i => i.team === item.team) === index).map(item => (<tr key={item.team}>
+                {standings?.filter((item, index) => standings.findIndex(i => i.team === item.team) === index).map(item => (<tr key={item.team} style={{ cursor: 'pointer' }} onClick={() => {
+                  setPopupContent({ visible: true, content: item })
+                }}>
                   <td>{item.pos}</td>
                   <td>{item.team}</td>
                   <td>{(teamsData?.find(team => team.name === item.team)?.countries || []).map(country => <ReactCountryFlag key={country} countryCode={country} aria-label={country} className='mr-2' />)}</td>
@@ -148,6 +153,36 @@ const RankingPage: NextPage<RankingPageProps> = (props) => {
           </Col>
         </Row>
       </Container>
+      <Modal show={popupContent.visible} onHide={() => setPopupContent({ visible: false, content: undefined })}>
+        <Modal.Header closeButton>
+          <Modal.Title> {popupContent.content?.pos} - {popupContent.content?.team}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Table striped bordered hover>
+            <thead>
+              <tr>
+                <th>{translation.challenge}</th>
+                <th>{translation.points}</th>
+                <th>{translation.timestamp}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {popupContent?.content?.taskStats && Object.entries(popupContent.content?.taskStats).map(([challenge, data]) => (<tr
+                key={challenge}
+              >
+                <td>{challenge}</td>
+                <td>{data.points}</td>
+                <td>{formatDateByLanguage(data.time, locale)}</td>
+              </tr>))}
+            </tbody>
+          </Table>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setPopupContent({ visible: false, content: undefined })}>
+            {translation.close}
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </>
   )
 }
@@ -245,14 +280,22 @@ const translations = {
     position: 'Position',
     team: 'Team',
     country: 'Countries',
-    score: 'Score'
+    score: 'Score',
+    close: 'Close',
+    challenge: 'Challenge',
+    points: 'Points',
+    timestamp: 'Timestamp'
   },
   'pt-BR': {
     title: 'Placar - NIZKCTF',
     position: 'Posição',
     team: 'Time',
     country: 'Países',
-    score: 'Pontuação'
+    score: 'Pontuação',
+    close: 'Fechar',
+    challenge: 'Desafio',
+    points: 'Pontos',
+    timestamp: 'Timestamp'
   },
 }
 
