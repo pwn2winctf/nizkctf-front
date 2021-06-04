@@ -1,5 +1,5 @@
 import { getTokenFromLocalStorage } from '../utils'
-import { API_BASE_URL } from '../constants'
+import { CONTENT_BASE_URL } from '../constants'
 
 const DEFAULT_CONTENT_TYPE = 'application/json'
 
@@ -66,7 +66,7 @@ export interface Solves {
 
 
 export const listTeams = async (): Promise<Omit<Team, 'members'>[]> => {
-  const url = new URL('/teams', API_BASE_URL).toString()
+  const url = new URL('/teams.json', CONTENT_BASE_URL).toString()
   const teams: Omit<Team, 'members'>[] = await myFetch(url).then(async response => response.data)
 
   return teams
@@ -74,7 +74,7 @@ export const listTeams = async (): Promise<Omit<Team, 'members'>[]> => {
 
 export const getMe = async ({ cancelToken }: { cancelToken?: CancelToken }): Promise<{ uid: string, team?: Omit<Team, 'id' | 'members'> }> => {
   const token = getTokenFromLocalStorage()
-  const url = new URL('/users/me', API_BASE_URL).toString()
+  const url = new URL('/users/me', CONTENT_BASE_URL).toString()
 
   const me: { uid: string, team?: Omit<Team, 'id' | 'members'> } = await myFetch(url, {
     headers: { Authorization: token },
@@ -88,14 +88,14 @@ export const getMe = async ({ cancelToken }: { cancelToken?: CancelToken }): Pro
 
 export const registerUser = async ({ shareInfo }: { shareInfo: boolean }): Promise<void> => {
   const token = getTokenFromLocalStorage()
-  const url = new URL('/users', API_BASE_URL).toString()
+  const url = new URL('/users', CONTENT_BASE_URL).toString()
 
   const body = JSON.stringify({ shareInfo })
   await myFetch(url, { method: 'POST', headers: { Authorization: token }, body })
 }
 export const registerTeam = async ({ name, countries }: { name: string, countries: string[] }): Promise<Omit<Team, 'id'>> => {
   const token = getTokenFromLocalStorage()
-  const url = new URL('/teams', API_BASE_URL).toString()
+  const url = new URL('/teams', CONTENT_BASE_URL).toString()
 
   const body = JSON.stringify({ name, countries })
   const team: Omit<Team, 'id'> = await myFetch(url, { method: 'POST', headers: { Authorization: token }, body }).then(response => response.data)
@@ -105,7 +105,7 @@ export const registerTeam = async ({ name, countries }: { name: string, countrie
 
 export const submitFlag = async ({ proof, teamId, challengeId }: { proof: string, teamId: string, challengeId: string }): Promise<Solves> => {
   const token = getTokenFromLocalStorage()
-  const url = new URL(`/teams/${teamId}/solves`, API_BASE_URL).toString()
+  const url = new URL(`/teams/${teamId}/solves`, CONTENT_BASE_URL).toString()
 
   const body = JSON.stringify({ proof, challengeId })
   const solves: Solves = await myFetch(url, { method: 'POST', headers: { Authorization: token }, body }).then(response => response.data)
