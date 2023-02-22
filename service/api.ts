@@ -1,7 +1,13 @@
-import { getTokenFromLocalStorage } from '../utils'
 import { API_BASE_URL } from '../constants'
+import firebase from 'firebase/app'
+import 'firebase/auth'
 
 const DEFAULT_CONTENT_TYPE = 'application/json'
+
+const getToken =async () => {
+  const auth = firebase.auth()
+  return await auth.currentUser.getIdToken()
+}
 
 export const myFetch = (input: RequestInfo, init?: RequestInit) => fetch(input, { ...init, headers: { 'Content-Type': DEFAULT_CONTENT_TYPE, ...init?.headers } }).then(async response => {
   const contentType = response.headers.get('content-type')
@@ -73,7 +79,7 @@ export const listTeams = async (): Promise<Omit<Team, 'members'>[]> => {
 }
 
 export const getMe = async ({ cancelToken }: { cancelToken?: CancelToken }): Promise<{ uid: string, team?: Omit<Team, 'id' | 'members'> }> => {
-  const token = getTokenFromLocalStorage()
+  const token = await getToken()
   const url = new URL('/users/me', API_BASE_URL).toString()
 
   const me: { uid: string, team?: Omit<Team, 'id' | 'members'> } = await myFetch(url, {
@@ -87,14 +93,14 @@ export const getMe = async ({ cancelToken }: { cancelToken?: CancelToken }): Pro
 }
 
 export const registerUser = async ({ shareInfo }: { shareInfo: boolean }): Promise<void> => {
-  const token = getTokenFromLocalStorage()
+  const token = await getToken()
   const url = new URL('/users', API_BASE_URL).toString()
 
   const body = JSON.stringify({ shareInfo })
   await myFetch(url, { method: 'POST', headers: { Authorization: token }, body })
 }
 export const registerTeam = async ({ name, countries }: { name: string, countries: string[] }): Promise<Omit<Team, 'id'>> => {
-  const token = getTokenFromLocalStorage()
+  const token = await getToken()
   const url = new URL('/teams', API_BASE_URL).toString()
 
   const body = JSON.stringify({ name, countries })
@@ -104,7 +110,7 @@ export const registerTeam = async ({ name, countries }: { name: string, countrie
 }
 
 export const submitFlag = async ({ proof, teamId, challengeId }: { proof: string, teamId: string, challengeId: string }): Promise<Solves> => {
-  const token = getTokenFromLocalStorage()
+  const token = await getToken()
   const url = new URL(`/teams/${teamId}/solves`, API_BASE_URL).toString()
 
   const body = JSON.stringify({ proof, challengeId })

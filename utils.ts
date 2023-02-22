@@ -1,4 +1,7 @@
 import dayjs from 'dayjs'
+import firebase from 'firebase/app'
+import 'firebase/auth'
+
 import { Challenge } from './interface'
 import { Team } from './service/api'
 
@@ -101,8 +104,6 @@ export const resolveListWithoutDuplicatedTags = (challenges: Array<Challenge>) =
   return listOfTags
 }
 
-export const getTokenFromLocalStorage = () => localStorage.getItem('token')
-
 export const IS_SERVER = typeof window === 'undefined'
 
 export const getMeFromLocalStorage = () => {
@@ -118,4 +119,10 @@ export const getMeFromLocalStorage = () => {
   const jsonData: { uid: string, team?: Team } = JSON.parse(data)
 
   return jsonData
+}
+
+
+export const getToken =async () => {
+  const auth = firebase.auth()
+  return await auth.currentUser.getIdToken()
 }

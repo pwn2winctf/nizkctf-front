@@ -28,10 +28,7 @@ export const AuthProvider = ({ children }) => {
     return firebase.auth().onIdTokenChanged(async (user) => {
       if (!user) {
         setUser(undefined)
-        localStorage.setItem('token', undefined)
       } else {
-        const token = await user.getIdToken()
-        localStorage.setItem('token', token)
         setUser(user)
       }
       setLoading(false)
@@ -87,9 +84,6 @@ export const login = async ({ email, password }: { email: string, password: stri
 
 export const signUp = async ({ email, password, shareInfo }: { email: string, password: string, shareInfo: boolean }) => {
   const userCredentials = await firebase.auth().createUserWithEmailAndPassword(email, password)
-
-  const token = await userCredentials.user.getIdToken()
-  localStorage.setItem('token', token)
 
   await Promise.all([userCredentials.user.sendEmailVerification(),
   registerUser({ shareInfo })
