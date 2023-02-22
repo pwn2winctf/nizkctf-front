@@ -40,6 +40,7 @@ const SignUpPage: NextPage = () => {
 
   const { user, isLoading } = useContext(AuthContext)
 
+  const [loading, setLoading] = useState(false)
   const [me, setMe] = useState<{
     uid: string;
     team?: Pick<Team, 'name' | 'countries'>
@@ -55,6 +56,7 @@ const SignUpPage: NextPage = () => {
 
     const fetchData = async () => {
       try {
+        setLoading(true)
         const data = await getMe({ cancelToken })
         setMe(data)
       } catch (err) {
@@ -71,6 +73,8 @@ const SignUpPage: NextPage = () => {
           message,
           'error'
         )
+      } finally {
+        setLoading(false)
       }
     }
 
@@ -245,7 +249,9 @@ const SignUpPage: NextPage = () => {
             <Card>
               <Card.Header as='h5'>{translation.registerYourTeam}</Card.Header>
               <Card.Body>
-                {me?.team ? <>
+                {loading ? <>
+                  <Card.Text>{translation.loading}</Card.Text>
+                </> : me?.team ? <>
                   <Card.Title>{me.team.name}</Card.Title>
                   <Card.Text>
                     <span className='font-weight-bold'>{translation.countries}: </span>{me.team.countries.map(item => <ReactCountryFlag key={item} countryCode={item} aria-label={item} />)}
