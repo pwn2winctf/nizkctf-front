@@ -13,7 +13,6 @@
     "chart.js": "^2.9.4",
     "dayjs": "^1.10.4",
     "firebase": "^8.2.6",
-    "gray-matter": "^4.0.2",
     "i18n-iso-countries": "^6.5.0",
     "multiselect-react-dropdown": "^1.6.7",
     "next": "12",
