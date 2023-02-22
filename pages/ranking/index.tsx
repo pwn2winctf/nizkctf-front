@@ -92,11 +92,13 @@ const RankingPage: NextPage<RankingPageProps> = (props) => {
     refreshInterval: 1000 * 15 // 15s
   })
 
+  const standingsData = standings || props.standings
+
   const {
     timeAxis,
     scoreAxis,
     topStandings
-  } = resolveAxisAndTopSolves(standings || props.standings)
+  } = resolveAxisAndTopSolves(standingsData)
   const timeAxisDate = timeAxis.map(fromUnixToDate)
 
   const defaultOptions = {
@@ -137,7 +139,7 @@ const RankingPage: NextPage<RankingPageProps> = (props) => {
                 </tr>
               </thead>
               <tbody>
-                {standings?.filter((item, index) => standings.findIndex(i => i.team === item.team) === index).map(item => (<tr key={item.team}>
+                {standingsData?.filter((item, index) => standingsData.findIndex(i => i.team === item.team) === index).map(item => (<tr key={item.team}>
                   <td>{item.pos}</td>
                   <td>{item.team}</td>
                   <td>{(teamsData?.find(team => team.name === item.team)?.countries || []).map(country => <ReactCountryFlag key={country} countryCode={country} aria-label={country} className='mr-2' />)}</td>
