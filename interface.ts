@@ -10,6 +10,10 @@ export interface ChallengeMetadata {
   tags: string[],
   id: string,
   pk: string,
+  combinedPublicKey: {
+    combinedKey: string
+    hashedKey: string
+  }
   salt: string,
   opslimit: number
 }

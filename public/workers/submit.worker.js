@@ -12,11 +12,11 @@ onmessage = async function (event) {
     var challenge = event.data.value.challenge
 
     try {
-      var hash = await claimFlag(teamName, flag, challenge)
+      var output = await claimFlag(teamName, flag, challenge)
 
       postMessage({
         message: 'completed',
-        result: hash
+        result: output
       })
     } catch (err) {
       postMessage({
@@ -28,31 +28,15 @@ onmessage = async function (event) {
 }
 
 async function claimFlag(teamName, flag, challenge) {
-  var keys = await lookupFlag(flag, challenge)
+  var seed = await lookupSeed(flag, challenge)
 
-  if (!keys) {
-    throw new Error('This is not the correct flag.')
+  return {
+    seed,
   }
-
-  var sha = await createHash256(teamName)
-
-  var proof = await createProof(sha, keys.privateKey)
-
-  var encodedProof = buffer.Buffer.from(proof).toString('base64')
-
-  return encodedProof
 }
 
-async function createHash256(message) {
+async function lookupSeed(flag, challenge) {
   await sodium.ready
-  var sha = await sodium.crypto_hash_sha256(message)
-
-  return buffer.Buffer.from(sha).toString('hex')
-}
-
-async function lookupFlag(flag, challenge) {
-  await sodium.ready
-  var decodedPk = buffer.Buffer.from(challenge.pk, 'base64')
   var decodedSalt = buffer.Buffer.from(challenge.salt, 'base64')
 
   var memlimit = challenge.memlimit
@@ -66,23 +50,8 @@ async function lookupFlag(flag, challenge) {
     memlimit,
     sodium.crypto_pwhash_ALG_ARGON2ID13
   )
-  var keys = await cryptoSignSeedKeypair(challengeSeed)
 
-  if (decodedPk.compare(buffer.Buffer.from(keys.publicKey)) !== 0) {
-    return null
-  }
-
-  return keys
-}
-
-
-async function createProof(teamNameSha, privateKey) {
-  return await cryptoSign(teamNameSha, privateKey)
-}
-
-async function cryptoSign(message, privateKey) {
-  await sodium.ready
-  return await sodium.crypto_sign(message, privateKey)
+  return challengeSeed
 }
 
 async function cryptoSignSeedKeypair(seed) {

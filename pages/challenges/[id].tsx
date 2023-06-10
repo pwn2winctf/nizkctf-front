@@ -20,6 +20,7 @@ import claimFlag from '../../lib/claimFlag'
 import { getMeFromLocalStorage, resolveLanguage } from '../../utils'
 import { submitFlag } from '../../service/api'
 import { END_EVENT_DATE, START_EVENT_DATE } from '../../constants'
+import { getKeyPairFromSeed } from '@lorhansohaky/schnorrkel.js/dist/es5/core'
 
 dayjs.extend(isBetween)
 
@@ -68,8 +69,10 @@ const ChallengePage: NextPage<ChallengePageProps> = ({ challenge }) => {
         },
       })
 
-      const proof = await claimFlag({ teamName: me.team?.name, flag, challenge: challenge.metadata })
-      await submitFlag({ proof, challengeId: challenge.metadata.id, teamId: me.team?.id })
+      const { seed } = await claimFlag({ teamName: me.team?.name, flag, challenge: challenge.metadata })
+      const keys = getKeyPairFromSeed(Buffer.from(seed).toString('hex'))
+
+      await submitFlag({ keys, challenge: challenge.metadata, teamId: me.team?.id })
 
 
       await swal.fire(

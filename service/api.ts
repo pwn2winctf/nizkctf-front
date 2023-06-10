@@ -1,10 +1,13 @@
-import { API_BASE_URL } from '../constants'
 import firebase from 'firebase/app'
 import 'firebase/auth'
+import Schnorrkel, { Key, KeyPair, PublicNonces } from '@lorhansohaky/schnorrkel.js/dist/es5'
+
+import { API_BASE_URL } from '../constants'
+import { ChallengeMetadata } from '../interface'
 
 const DEFAULT_CONTENT_TYPE = 'application/json'
 
-const getToken =async () => {
+const getToken = async () => {
   const auth = firebase.auth()
   return await auth.currentUser.getIdToken()
 }
@@ -109,12 +112,58 @@ export const registerTeam = async ({ name, countries }: { name: string, countrie
   return team
 }
 
-export const submitFlag = async ({ proof, teamId, challengeId }: { proof: string, teamId: string, challengeId: string }): Promise<Solves> => {
+export const submitFlag = async ({ keys, challenge: challenge, teamId }: {
+  teamId: string, challenge: Pick<ChallengeMetadata, 'id' | 'combinedPublicKey'>, keys: KeyPair
+}): Promise<Solves> => {
   const token = await getToken()
-  const url = new URL(`/teams/${teamId}/solves`, API_BASE_URL).toString()
 
-  const body = JSON.stringify({ proof, challengeId })
-  const solves: Solves = await myFetch(url, { method: 'POST', headers: { Authorization: token }, body }).then(response => response.data)
+  const schnorrkelClient = new Schnorrkel()
+  const clientKeyPair = keys
+
+  const clientPublicNonce = schnorrkelClient.generatePublicNonces(clientKeyPair.privateKey)
+
+  interface Response1 {
+    sessionId: string
+    serverPublicNonce: {
+      kPublic: string
+      kTwoPublic: string
+    }
+  }
+
+  const url1 = new URL(`/teams/${teamId}/solves/${challenge.id}/steps/1`, API_BASE_URL).toString()
+  const response1: Response1 = await myFetch(url1, {
+    method: 'POST',
+    headers: { Authorization: token },
+    body: JSON.stringify({
+      kPublic: clientPublicNonce.kPublic.toHex(),
+      kTwoPublic: clientPublicNonce.kTwoPublic.toHex(),
+      publicKey: clientKeyPair.publicKey.toHex()
+    })
+  }).then(response => response.data)
+
+  const serverPublicNonce: PublicNonces = {
+    kPublic: Key.fromHex(response1.serverPublicNonce.kPublic),
+    kTwoPublic: Key.fromHex(response1.serverPublicNonce.kTwoPublic)
+  }
+  const clientPublicNonces = [clientPublicNonce, serverPublicNonce]
+  const msg = teamId
+  const combinedPublicKey = {
+    combinedKey: Key.fromHex(challenge.combinedPublicKey.combinedKey),
+    hashedKey: challenge.combinedPublicKey.hashedKey
+  }
+
+  const clientSignature = schnorrkelClient.multiSigSign(clientKeyPair.privateKey, msg, combinedPublicKey, clientPublicNonces)
+
+  const url2 = new URL(`/teams/${teamId}/solves/${challenge.id}/steps/2`, API_BASE_URL).toString()
+  const solves = await myFetch(url2, {
+    method: 'POST',
+    headers: { Authorization: token },
+    body: JSON.stringify({
+      sessionId: response1.sessionId,
+      signature: clientSignature.signature.toHex(),
+      message: msg
+    })
+  }).then(response => response.data)
 
   return solves
 }

@@ -9,6 +9,7 @@
     "audit:fix": "npm i --package-lock-only && npm audit fix && rm yarn.lock && yarn import && rm package-lock.json"
   },
   "dependencies": {
+    "@lorhansohaky/schnorrkel.js": "^1.1.0",
     "@sentry/browser": "^6.3.5",
     "bootstrap": "^4.6.0",
     "chart.js": "^2.9.4",
